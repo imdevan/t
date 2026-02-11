@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +51,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        timer: {
+          glow: "hsl(var(--timer-glow))",
+          active: "hsl(var(--timer-active))",
+          completed: "hsl(var(--timer-completed))",
+          paused: "hsl(var(--timer-paused))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,25 +75,24 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "digit-flip": {
+          "0%": { transform: "rotateX(0deg)", opacity: "1" },
+          "50%": { transform: "rotateX(-90deg)", opacity: "0" },
+          "51%": { transform: "rotateX(90deg)", opacity: "0" },
+          "100%": { transform: "rotateX(0deg)", opacity: "1" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "digit-flip": "digit-flip 0.4s ease-in-out",
       },
     },
   },
