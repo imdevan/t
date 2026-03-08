@@ -32,7 +32,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress }: Time
   return (
     <div
       data-testid="timer-display"
-      className={`relative flex items-center justify-center w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 mx-auto rounded-full transition-shadow duration-700 ${glowClass}`}
+      className={`relative flex items-center justify-center w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 mx-auto rounded-full transition-shadow duration-700 ${glowClass}`}
     >
       {/* Progress ring */}
       <svg
