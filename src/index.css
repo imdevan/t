@@ -212,4 +212,29 @@
   .scale-press:active {
     transform: scale(0.95);
   }
+
+  .mac-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .mac-scrollbar:hover {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+  .mac-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .mac-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .mac-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    transition: background 0.2s;
+  }
+  .mac-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+  .mac-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
 }
