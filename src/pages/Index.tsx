@@ -90,6 +90,7 @@ const Index = () => {
           status={status}
           progress={progress}
           youtubeUrl={settings.youtubeUrl}
+          onStart={startTimer}
         />
 
         {/* Controls */}
