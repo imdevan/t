@@ -1,4 +1,4 @@
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import { Play, Pause, RotateCcw, Square } from 'lucide-react';
 import { TimerStatus } from '@/hooks/useTimer';
 
 interface TimerControlsProps {
@@ -7,9 +7,10 @@ interface TimerControlsProps {
   onPause: () => void;
   onResume: () => void;
   onReset: () => void;
+  onStop: () => void;
 }
 
-export function TimerControls({ status, onPause, onResume, onReset }: TimerControlsProps) {
+export function TimerControls({ status, onPause, onResume, onReset, onStop }: TimerControlsProps) {
   if (status === 'idle') return null;
 
   return (
@@ -18,7 +19,10 @@ export function TimerControls({ status, onPause, onResume, onReset }: TimerContr
         <ControlButton icon={<Pause size={22} />} label="Pause" onClick={onPause} variant="primary" />
       )}
       {status === 'paused' && (
-        <ControlButton icon={<Play size={22} />} label="Resume" onClick={onResume} variant="primary" />
+        <>
+          <ControlButton icon={<Square size={20} />} label="Stop" onClick={onStop} variant="secondary" />
+          <ControlButton icon={<Play size={22} />} label="Resume" onClick={onResume} variant="primary" />
+        </>
       )}
       <ControlButton icon={<RotateCcw size={18} />} label="Reset" onClick={onReset} variant="secondary" />
     </div>
