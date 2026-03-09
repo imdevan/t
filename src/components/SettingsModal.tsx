@@ -205,96 +205,17 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
               </div>
 
               {/* Custom Gradients */}
-              <div className="space-y-3">
-                <span className="text-sm text-foreground font-medium">Custom Gradients</span>
-
-                {/* Saved custom gradients */}
-                {(settings.customGradients || []).length > 0 && (
-                  <div className="grid grid-cols-3 gap-2">
-                    {(settings.customGradients || []).map(g => (
-                      <div key={g.id} className="relative group">
-                        <button
-                          onClick={() => selectCustomGradient(g.id)}
-                          className={`w-full flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
-                            settings.timerTheme === 'custom' && settings.activeCustomGradientId === g.id
-                              ? 'border-primary bg-primary/10'
-                              : 'border-border hover:border-muted-foreground/30'
-                          }`}
-                        >
-                          <ThemeRing gradient={`conic-gradient(${g.colors.join(', ')}, ${g.colors[0]})`} />
-                          <span className="text-xs text-foreground font-medium truncate w-full text-center">{g.name}</span>
-                        </button>
-                        <button
-                          onClick={() => removeCustomGradient(g.id)}
-                          className="absolute -top-1 -right-1 p-0.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                          aria-label={`Delete ${g.name}`}
-                        >
-                          <X size={10} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* New custom gradient builder */}
-                <div className="p-3 rounded-xl border border-border bg-card/50 space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Gradient name…"
-                    value={newGradientName}
-                    onChange={e => setNewGradientName(e.target.value)}
-                    className="w-full bg-card border border-border rounded-lg px-3 py-1.5 text-xs text-foreground
-                      placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  />
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {newGradientColors.map((color, i) => (
-                      <div key={i} className="flex items-center gap-1">
-                        <input
-                          type="color"
-                          value={color}
-                          onChange={e => {
-                            const updated = [...newGradientColors];
-                            updated[i] = e.target.value;
-                            setNewGradientColors(updated);
-                          }}
-                          className="w-7 h-7 rounded-md border border-border cursor-pointer"
-                        />
-                        {newGradientColors.length > 2 && (
-                          <button
-                            onClick={() => setNewGradientColors(newGradientColors.filter((_, j) => j !== i))}
-                            className="text-muted-foreground hover:text-destructive transition-colors"
-                            aria-label="Remove color"
-                          >
-                            <X size={10} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    {newGradientColors.length < 6 && (
-                      <button
-                        onClick={() => setNewGradientColors([...newGradientColors, '#888888'])}
-                        className="w-7 h-7 rounded-md border border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-                        aria-label="Add color"
-                      >
-                        <Plus size={12} />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Preview */}
-                  <div className="flex items-center gap-3">
-                    <ThemeRing gradient={`conic-gradient(${newGradientColors.join(', ')}, ${newGradientColors[0]})`} />
-                    <button
-                      onClick={addCustomGradient}
-                      disabled={!newGradientName.trim()}
-                      className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium
-                        disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <CustomGradientsSection
+                settings={settings}
+                onUpdate={onUpdate}
+                selectCustomGradient={selectCustomGradient}
+                removeCustomGradient={removeCustomGradient}
+                addCustomGradient={addCustomGradient}
+                newGradientName={newGradientName}
+                setNewGradientName={setNewGradientName}
+                newGradientColors={newGradientColors}
+                setNewGradientColors={setNewGradientColors}
+              />
             </div>
           </div>
         </div>
