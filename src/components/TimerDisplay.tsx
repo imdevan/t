@@ -89,25 +89,26 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     }
   };
 
+  const computeSeconds = (l: string, r: string) => {
+    const left = parseInt(l) || 0;
+    const right = parseInt(r) || 0;
+    if (leftUnit === 'hours') return left * 3600 + right * 60;
+    return left * 60 + right;
+  };
+
   const handleBlur = (e: React.FocusEvent) => {
     const container = e.currentTarget;
     requestAnimationFrame(() => {
       if (!container.contains(document.activeElement)) {
-        // When blurring while paused, update the time if values were changed
         if (status === 'paused' && onUpdateTime) {
-          const left = parseInt(leftValue) || 0;
-          const right = parseInt(rightValue) || 0;
-          let secs: number;
-          if (leftUnit === 'hours') {
-            secs = left * 3600 + right * 60;
-          } else {
-            secs = left * 60 + right;
-          }
-          if (secs > 0) {
-            onUpdateTime(secs);
-          }
+          const secs = computeSeconds(leftValue, rightValue);
+          if (secs > 0) onUpdateTime(secs);
+          setEditing(false);
+        } else if (status === 'idle' || status === 'completed') {
+          // Keep editing visible, notify parent of pending seconds
+          const secs = computeSeconds(leftValue, rightValue);
+          onPendingChange?.(secs > 0 ? secs : null);
         }
-        setEditing(false);
       }
     });
   };
