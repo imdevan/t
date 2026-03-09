@@ -1,11 +1,19 @@
 import { formatTime } from '@/lib/timer';
 import { TimerStatus } from '@/hooks/useTimer';
+import { X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+function extractYoutubeId(url: string): string | null {
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
 
 interface TimerDisplayProps {
   remaining: number;
   totalSeconds: number;
   status: TimerStatus;
   progress: number;
+  youtubeUrl?: string;
 }
 
 export function TimerDisplay({ remaining, totalSeconds, status, progress }: TimerDisplayProps) {
