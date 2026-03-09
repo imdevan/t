@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { TimerDisplay } from '@/components/TimerDisplay';
@@ -28,7 +28,7 @@ const Index = () => {
   const { settings, setSettings } = useSettings();
   const { recent, addRecent, clearRecent } = useRecentTimers();
   const { resolvedTheme, toggleTheme } = useTheme();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const handleComplete = useCallback(() => {
     if (settings.audioEnabled) {
@@ -49,9 +49,10 @@ const Index = () => {
 
   // URL param handling
   useEffect(() => {
-    const timerParam = searchParams.get('timer');
-    if (timerParam) {
-      const seconds = parseTimerParam(timerParam);
+    // Parse raw query string: /timer?10 → "10", /timer?1:30m → "1:30m"
+    const raw = location.search.replace(/^\?/, '');
+    if (raw) {
+      const seconds = parseTimerParam(raw);
       if (seconds && seconds > 0) {
         startTimer(seconds, formatDuration(seconds));
       }
