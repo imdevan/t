@@ -1,4 +1,4 @@
-import { Play, Pause, RotateCcw, Square } from 'lucide-react';
+import { Play, Pause, RotateCcw, Square, X } from 'lucide-react';
 import { TimerStatus } from '@/hooks/useTimer';
 
 interface TimerControlsProps {
@@ -8,9 +8,22 @@ interface TimerControlsProps {
   onResume: () => void;
   onReset: () => void;
   onStop: () => void;
+  pendingSeconds?: number | null;
+  onStartPending?: () => void;
+  onClearPending?: () => void;
 }
 
-export function TimerControls({ status, onPause, onResume, onReset, onStop }: TimerControlsProps) {
+export function TimerControls({ status, onPause, onResume, onReset, onStop, pendingSeconds, onStartPending, onClearPending }: TimerControlsProps) {
+  // Show Start/Clear when user has entered a pending time while idle
+  if ((status === 'idle' || status === 'completed') && pendingSeconds && pendingSeconds > 0) {
+    return (
+      <div data-testid="timer-controls" className="flex items-center justify-center gap-4 fade-in-up">
+        <ControlButton icon={<X size={18} />} label="Clear" onClick={onClearPending!} variant="secondary" />
+        <ControlButton icon={<Play size={22} />} label="Start" onClick={onStartPending!} variant="primary" />
+      </div>
+    );
+  }
+
   if (status === 'idle') return null;
 
   return (

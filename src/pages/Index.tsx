@@ -111,6 +111,17 @@ const Index = () => {
           onResume={resume}
           onReset={reset}
           onStop={stop}
+          pendingSeconds={pendingSeconds}
+          onStartPending={() => {
+            if (pendingSeconds && pendingSeconds > 0) {
+              startTimer(pendingSeconds, formatDuration(pendingSeconds));
+            }
+          }}
+          onClearPending={() => {
+            setPendingSeconds(null);
+            // Reset the timer display editing state
+            reset();
+          }}
         />
 
         {/* Presets & Input (show when idle or completed) */}
