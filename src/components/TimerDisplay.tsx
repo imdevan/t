@@ -114,15 +114,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   };
 
   const handleSubmit = () => {
-    const left = parseInt(leftValue) || 0;
-    const right = parseInt(rightValue) || 0;
-    if (left <= 0 && right <= 0) return;
-    let secs: number;
-    if (leftUnit === 'hours') {
-      secs = left * 3600 + right * 60;
-    } else {
-      secs = left * 60 + right;
-    }
+    const secs = computeSeconds(leftValue, rightValue);
     if (secs <= 0) return;
     if (status === 'paused' && onUpdateTime) {
       onUpdateTime(secs);
@@ -132,6 +124,14 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     setEditing(false);
     setLeftValue('');
     setRightValue('');
+    onPendingChange?.(null);
+  };
+
+  const clearEditing = () => {
+    setEditing(false);
+    setLeftValue('');
+    setRightValue('');
+    onPendingChange?.(null);
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
