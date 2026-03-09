@@ -97,7 +97,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const handleSubmit = () => {
     const left = parseInt(leftValue) || 0;
     const right = parseInt(rightValue) || 0;
-    if (left <= 0 && right <= 0 || !onStart) return;
+    if (left <= 0 && right <= 0) return;
     let secs: number;
     if (leftUnit === 'hours') {
       secs = left * 3600 + right * 60;
@@ -105,7 +105,11 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
       secs = left * 60 + right;
     }
     if (secs <= 0) return;
-    onStart(secs, formatDuration(secs));
+    if (status === 'paused' && onUpdateTime) {
+      onUpdateTime(secs);
+    } else if (onStart) {
+      onStart(secs, formatDuration(secs));
+    }
     setEditing(false);
     setLeftValue('');
     setRightValue('');
