@@ -1,4 +1,4 @@
-import { Settings, X, Type } from 'lucide-react';
+import { Settings, X, Type, Youtube } from 'lucide-react';
 import { useState } from 'react';
 import { TimrSettings } from '@/hooks/useSettings';
 
