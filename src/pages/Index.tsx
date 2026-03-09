@@ -32,9 +32,9 @@ const Index = () => {
 
   const handleComplete = useCallback(() => {
     if (settings.audioEnabled) {
-      playCompletionSound(settings.volume);
+      playCompletionSound(settings.volume, settings.completionSound);
     }
-  }, [settings.audioEnabled, settings.volume]);
+  }, [settings.audioEnabled, settings.volume, settings.completionSound]);
 
   const { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop, updateTime } = useTimer({
     onComplete: handleComplete,

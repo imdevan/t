@@ -1,7 +1,8 @@
-import { Settings, X, Type, Youtube, Volume2, Palette, Plus, ChevronDown } from 'lucide-react';
+import { Settings, X, Type, Youtube, Volume2, Palette, Plus, ChevronDown, Play } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
 import { TimrSettings, CustomGradient } from '@/hooks/useSettings';
+import { COMPLETION_SOUNDS, playCompletionSound, CompletionSound } from '@/lib/audio';
 
 interface SettingsModalProps {
   settings: TimrSettings;
@@ -88,22 +89,53 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
 
               {/* Volume */}
               {settings.audioEnabled && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Volume2 size={14} className="text-muted-foreground" />
-                    <span className="text-sm text-foreground">Volume</span>
-                    <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                      {Math.round(settings.volume * 100)}%
-                    </span>
+                <div className="space-y-3">
+                  {/* Sound picker */}
+                  <div className="space-y-2">
+                    <span className="text-xs text-muted-foreground">Completion Sound</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      {COMPLETION_SOUNDS.map(s => (
+                        <button
+                          key={s.id}
+                          onClick={() => onUpdate({ completionSound: s.id })}
+                          className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border-2 transition-all duration-200 text-center ${
+                            settings.completionSound === s.id
+                              ? 'border-primary bg-primary/10'
+                              : 'border-border hover:border-muted-foreground/30'
+                          }`}
+                        >
+                          <span className="text-xs font-medium text-foreground">{s.label}</span>
+                          <span className="text-[10px] text-muted-foreground leading-tight">{s.description}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => playCompletionSound(settings.volume, settings.completionSound)}
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <Play size={12} />
+                      Preview sound
+                    </button>
                   </div>
-                  <Slider
-                    value={[settings.volume]}
-                    onValueChange={([v]) => onUpdate({ volume: v })}
-                    min={0}
-                    max={1}
-                    step={0.05}
-                    className="w-full"
-                  />
+
+                  {/* Volume */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Volume2 size={14} className="text-muted-foreground" />
+                      <span className="text-sm text-foreground">Volume</span>
+                      <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                        {Math.round(settings.volume * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[settings.volume]}
+                      onValueChange={([v]) => onUpdate({ volume: v })}
+                      min={0}
+                      max={1}
+                      step={0.05}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               )}
 
