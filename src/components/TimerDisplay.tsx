@@ -95,7 +95,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
               allow="autoplay; encrypted-media"
               allowFullScreen
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{ width: '180%', height: '180%' }}
+              style={{ width: '300%', height: '100%' }}
               title="Completion video"
             />
           </div>
