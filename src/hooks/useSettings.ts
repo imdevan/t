@@ -2,7 +2,13 @@ import { useEffect, useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'timr-settings';
 
-export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean';
+export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean' | 'custom';
+
+export interface CustomGradient {
+  id: string;
+  name: string;
+  colors: string[]; // array of hex colors
+}
 
 export interface TimrSettings {
   audioEnabled: boolean;
@@ -12,6 +18,8 @@ export interface TimrSettings {
   googleFontUrl: string;
   youtubeUrl: string;
   timerTheme: TimerTheme;
+  customGradients: CustomGradient[];
+  activeCustomGradientId: string;
 }
 
 const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap';
