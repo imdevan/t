@@ -49,7 +49,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   }, [status, videoId]);
 
   useEffect(() => {
-    if (status === 'running' || status === 'paused') {
+    if (status === 'running') {
       setEditing(false);
     }
   }, [status]);
