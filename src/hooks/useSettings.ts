@@ -7,6 +7,7 @@ export interface TimrSettings {
   defaultUnit: 'seconds' | 'minutes' | 'hours';
   keepAwake: boolean;
   googleFontUrl: string;
+  youtubeUrl: string;
 }
 
 const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap';
@@ -16,6 +17,7 @@ const defaultSettings: TimrSettings = {
   defaultUnit: 'minutes',
   keepAwake: true,
   googleFontUrl: DEFAULT_FONT_URL,
+  youtubeUrl: '',
 };
 
 export function useSettings() {

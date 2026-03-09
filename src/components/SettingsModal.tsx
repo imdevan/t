@@ -1,4 +1,4 @@
-import { Settings, X, Type } from 'lucide-react';
+import { Settings, X, Type, Youtube } from 'lucide-react';
 import { useState } from 'react';
 import { TimrSettings } from '@/hooks/useSettings';
 
@@ -97,6 +97,27 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                 />
                 <p className="text-[11px] text-muted-foreground leading-tight">
                   Paste a Google Fonts CSS URL, e.g. fonts.googleapis.com/css2?family=Inter
+                </p>
+              </div>
+
+              {/* YouTube URL */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Youtube size={14} className="text-muted-foreground" />
+                  <span className="text-sm text-foreground">Completion Video</span>
+                </div>
+                <input
+                  type="url"
+                  placeholder="Paste YouTube video URL…"
+                  value={settings.youtubeUrl}
+                  onChange={e => onUpdate({ youtubeUrl: e.target.value })}
+                  className="w-full bg-card border border-border rounded-lg px-3 py-2 text-xs text-foreground
+                    placeholder:text-muted-foreground
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                    transition-colors"
+                />
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  Plays inside the timer ring when the countdown ends
                 </p>
               </div>
             </div>
