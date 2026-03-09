@@ -15,6 +15,7 @@ const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:
 
 const defaultSettings: TimrSettings = {
   audioEnabled: true,
+  volume: 0.5,
   defaultUnit: 'minutes',
   keepAwake: true,
   googleFontUrl: DEFAULT_FONT_URL,
