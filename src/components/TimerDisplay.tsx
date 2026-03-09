@@ -49,7 +49,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   }, [status, videoId]);
 
   useEffect(() => {
-    if (status === 'running' || status === 'paused') {
+    if (status === 'running') {
       setEditing(false);
     }
   }, [status]);
@@ -60,7 +60,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     }
   }, [editing]);
 
-  const canEdit = (status === 'idle' || status === 'completed') && !showVideo;
+  const canEdit = (status === 'idle' || status === 'completed' || status === 'paused') && !showVideo;
 
   const handleClick = () => {
     if (canEdit && onStart) {
