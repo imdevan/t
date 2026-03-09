@@ -1,4 +1,5 @@
-import { Settings, X, Type, Youtube } from 'lucide-react';
+import { Settings, X, Type, Youtube, Volume2 } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
 import { TimrSettings } from '@/hooks/useSettings';
 
