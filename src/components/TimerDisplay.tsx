@@ -21,10 +21,24 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [editValue, setEditValue] = useState('');
-  const [editUnit, setEditUnit] = useState<'seconds' | 'minutes' | 'hours'>('minutes');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [leftValue, setLeftValue] = useState('');
+  const [rightValue, setRightValue] = useState('');
+  const [leftUnit, setLeftUnit] = useState<'minutes' | 'hours'>(() => {
+    try {
+      const stored = localStorage.getItem('timr-inline-unit');
+      if (stored === 'hours') return 'hours';
+    } catch {}
+    return 'minutes';
+  });
+  const leftInputRef = useRef<HTMLInputElement>(null);
+  const rightInputRef = useRef<HTMLInputElement>(null);
   const videoId = extractYoutubeId(youtubeUrl);
+
+  const rightUnit = leftUnit === 'hours' ? 'min' : 'sec';
+
+  useEffect(() => {
+    localStorage.setItem('timr-inline-unit', leftUnit);
+  }, [leftUnit]);
 
   useEffect(() => {
     if (status === 'completed' && videoId) {
@@ -42,7 +56,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
 
   useEffect(() => {
     if (editing) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      setTimeout(() => leftInputRef.current?.focus(), 50);
     }
   }, [editing]);
 
@@ -51,17 +65,26 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const handleClick = () => {
     if (canEdit && onStart) {
       setEditing(true);
-      setEditValue('');
+      setLeftValue('');
+      setRightValue('');
     }
   };
 
   const handleSubmit = () => {
-    const num = parseFloat(editValue);
-    if (isNaN(num) || num <= 0 || !onStart) return;
-    const secs = durationToSeconds(Math.round(num), editUnit);
+    const left = parseInt(leftValue) || 0;
+    const right = parseInt(rightValue) || 0;
+    if (left <= 0 && right <= 0 || !onStart) return;
+    let secs: number;
+    if (leftUnit === 'hours') {
+      secs = left * 3600 + right * 60;
+    } else {
+      secs = left * 60 + right;
+    }
+    if (secs <= 0) return;
     onStart(secs, formatDuration(secs));
     setEditing(false);
-    setEditValue('');
+    setLeftValue('');
+    setRightValue('');
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
