@@ -32,6 +32,8 @@ const defaultSettings: TimrSettings = {
   googleFontUrl: DEFAULT_FONT_URL,
   youtubeUrl: '',
   timerTheme: 'classic',
+  customGradients: [],
+  activeCustomGradientId: '',
 };
 
 export function useSettings() {
