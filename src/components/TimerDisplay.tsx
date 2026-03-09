@@ -185,7 +185,18 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     },
   };
 
-  const currentGradient = themeGradients[timerTheme];
+  // Build custom gradient entry if applicable
+  let currentGradient = themeGradients[timerTheme] || null;
+  if (timerTheme === 'custom' && customGradient && customGradient.colors.length >= 2) {
+    const colors = customGradient.colors;
+    const stops = colors.map((c, i) => ({
+      offset: `${Math.round((i / (colors.length - 1)) * 100)}%`,
+      color: c,
+    }));
+    // Add closing stop
+    stops.push({ offset: '100%', color: colors[0] });
+    currentGradient = { stops, glowClass: '' };
+  }
 
   const glowClass = isGradient
     ? (status === 'running' || status === 'paused' ? (currentGradient?.glowClass || '') : status === 'completed' ? 'timer-completed-glow' : '')
