@@ -76,7 +76,14 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
   }, [clearTimer]);
 
   const updateTime = useCallback((seconds: number) => {
-    setTotalSeconds(seconds);
+    setTotalSeconds(prev => {
+      if (seconds >= prev) {
+        // New time is greater or equal — reset the ring
+        return seconds;
+      }
+      // Keep original total so progress ring shows elapsed proportion
+      return prev;
+    });
     setRemaining(seconds);
   }, []);
 
