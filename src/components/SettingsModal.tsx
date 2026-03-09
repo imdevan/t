@@ -277,86 +277,98 @@ function CustomGradientsSection({
           Add Gradient
         </button>
       ) : (
-        <div className="p-3 rounded-xl border border-border bg-card/50 space-y-3">
-          <input
-            type="text"
-            placeholder="Gradient name…"
-            value={newGradientName}
-            onChange={e => setNewGradientName(e.target.value)}
-            className="w-full bg-card border border-border rounded-lg px-3 py-1.5 text-xs text-foreground
-              placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        <div className="rounded-xl border border-border bg-card/50 overflow-hidden">
+          {/* Preview bar */}
+          <div
+            className="h-3 w-full"
+            style={{ background: `linear-gradient(to right, ${newGradientColors.join(', ')})` }}
           />
-          <div className="space-y-2">
-            {newGradientColors.map((color, i) => (
-              <div key={i} className="flex items-center gap-2 group/color">
-                <label
-                  className="block w-8 h-8 rounded-full cursor-pointer border-2 border-border hover:border-foreground/40 transition-colors shrink-0"
-                  style={{ backgroundColor: color }}
-                >
+
+          <div className="p-4 space-y-4">
+            {/* Name input */}
+            <input
+              type="text"
+              placeholder="Gradient name…"
+              value={newGradientName}
+              onChange={e => setNewGradientName(e.target.value)}
+              className="w-full bg-transparent border-b border-border px-1 py-1.5 text-sm text-foreground
+                placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:border-primary
+                transition-colors"
+            />
+
+            {/* Color stops */}
+            <div className="flex flex-wrap items-center gap-2">
+              {newGradientColors.map((color, i) => (
+                <div key={i} className="relative group/color">
+                  <label
+                    className="block w-9 h-9 rounded-lg cursor-pointer ring-2 ring-border hover:ring-foreground/40 transition-all shadow-sm"
+                    style={{ backgroundColor: color }}
+                  >
+                    <input
+                      type="color"
+                      value={color}
+                      onChange={e => {
+                        const updated = [...newGradientColors];
+                        updated[i] = e.target.value;
+                        setNewGradientColors(updated);
+                      }}
+                      className="sr-only"
+                    />
+                  </label>
+                  {newGradientColors.length > 2 && (
+                    <button
+                      onClick={() => setNewGradientColors(newGradientColors.filter((_, j) => j !== i))}
+                      className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center
+                        opacity-0 group-hover/color:opacity-100 transition-opacity"
+                      aria-label="Remove color"
+                    >
+                      <X size={8} />
+                    </button>
+                  )}
                   <input
-                    type="color"
+                    type="text"
                     value={color}
                     onChange={e => {
+                      let v = e.target.value;
+                      if (!v.startsWith('#')) v = '#' + v;
                       const updated = [...newGradientColors];
-                      updated[i] = e.target.value;
+                      updated[i] = v;
                       setNewGradientColors(updated);
                     }}
-                    className="sr-only"
+                    maxLength={7}
+                    className="mt-1 w-[4.2rem] bg-transparent text-center text-[10px] text-muted-foreground font-mono
+                      border-none focus-visible:outline-none focus-visible:text-foreground transition-colors"
                   />
-                </label>
-                <input
-                  type="text"
-                  value={color}
-                  onChange={e => {
-                    let v = e.target.value;
-                    if (!v.startsWith('#')) v = '#' + v;
-                    const updated = [...newGradientColors];
-                    updated[i] = v;
-                    setNewGradientColors(updated);
-                  }}
-                  maxLength={7}
-                  className="w-20 bg-card border border-border rounded-lg px-2 py-1 text-xs text-foreground font-mono
-                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-                {newGradientColors.length > 2 && (
-                  <button
-                    onClick={() => setNewGradientColors(newGradientColors.filter((_, j) => j !== i))}
-                    className="w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center
-                      opacity-0 group-hover/color:opacity-100 transition-opacity"
-                    aria-label="Remove color"
-                  >
-                    <X size={8} />
-                  </button>
-                )}
-              </div>
-            ))}
-            {newGradientColors.length < 6 && (
-              <button
-                onClick={() => setNewGradientColors([...newGradientColors, '#888888'])}
-                className="w-8 h-8 rounded-full border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-                aria-label="Add color"
-              >
-                <Plus size={12} />
-              </button>
-            )}
-          </div>
+                </div>
+              ))}
+              {newGradientColors.length < 6 && (
+                <button
+                  onClick={() => setNewGradientColors([...newGradientColors, '#888888'])}
+                  className="w-9 h-9 rounded-lg border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                  aria-label="Add color"
+                >
+                  <Plus size={12} />
+                </button>
+              )}
+            </div>
 
-          <div className="flex items-center gap-3">
-            <ThemeRing gradient={`conic-gradient(${newGradientColors.join(', ')}, ${newGradientColors[0]})`} />
-            <button
-              onClick={() => { addCustomGradient(); setShowForm(false); }}
-              disabled={!newGradientName.trim()}
-              className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium
-                disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setShowForm(false)}
-              className="px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cancel
-            </button>
+            {/* Actions */}
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                onClick={() => { addCustomGradient(); setShowForm(false); }}
+                disabled={!newGradientName.trim()}
+                className="flex-1 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold
+                  disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+              >
+                Save Gradient
+              </button>
+              <button
+                onClick={() => setShowForm(false)}
+                className="px-3 py-2 rounded-lg border border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
