@@ -102,6 +102,7 @@ const Index = () => {
           }
           onStart={startTimer}
           onUpdateTime={updateTime}
+          onPendingChange={setPendingSeconds}
         />
         {/* Controls */}
         <TimerControls
