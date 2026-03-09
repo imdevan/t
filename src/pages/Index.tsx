@@ -28,7 +28,7 @@ const Index = () => {
   const { settings, setSettings } = useSettings();
   const { recent, addRecent, clearRecent } = useRecentTimers();
   const { resolvedTheme, toggleTheme } = useTheme();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const handleComplete = useCallback(() => {
     if (settings.audioEnabled) {
