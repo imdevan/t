@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -40,11 +40,15 @@ const Index = () => {
     onComplete: handleComplete,
   });
 
+  const [pendingSeconds, setPendingSeconds] = useState<number | null>(null);
+  const timerDisplayRef = useRef<{ clearEditing: () => void }>(null);
+
   useWakeLock(settings.keepAwake, status === 'running');
 
   const startTimer = useCallback((seconds: number, label: string) => {
     addRecent(seconds, label);
     start(seconds);
+    setPendingSeconds(null);
   }, [addRecent, start]);
 
   // URL param handling
@@ -98,6 +102,7 @@ const Index = () => {
           }
           onStart={startTimer}
           onUpdateTime={updateTime}
+          onPendingChange={setPendingSeconds}
         />
         {/* Controls */}
         <TimerControls
@@ -106,6 +111,17 @@ const Index = () => {
           onResume={resume}
           onReset={reset}
           onStop={stop}
+          pendingSeconds={pendingSeconds}
+          onStartPending={() => {
+            if (pendingSeconds && pendingSeconds > 0) {
+              startTimer(pendingSeconds, formatDuration(pendingSeconds));
+            }
+          }}
+          onClearPending={() => {
+            setPendingSeconds(null);
+            // Reset the timer display editing state
+            reset();
+          }}
         />
 
         {/* Presets & Input (show when idle or completed) */}

@@ -19,9 +19,10 @@ interface TimerDisplayProps {
   customGradient?: CustomGradient | null;
   onStart?: (seconds: number, label: string) => void;
   onUpdateTime?: (seconds: number) => void;
+  onPendingChange?: (seconds: number | null) => void;
 }
 
-export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', timerTheme = 'classic', customGradient, onStart, onUpdateTime }: TimerDisplayProps) {
+export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', timerTheme = 'classic', customGradient, onStart, onUpdateTime, onPendingChange }: TimerDisplayProps) {
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -88,39 +89,32 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     }
   };
 
+  const computeSeconds = (l: string, r: string) => {
+    const left = parseInt(l) || 0;
+    const right = parseInt(r) || 0;
+    if (leftUnit === 'hours') return left * 3600 + right * 60;
+    return left * 60 + right;
+  };
+
   const handleBlur = (e: React.FocusEvent) => {
     const container = e.currentTarget;
     requestAnimationFrame(() => {
       if (!container.contains(document.activeElement)) {
-        // When blurring while paused, update the time if values were changed
         if (status === 'paused' && onUpdateTime) {
-          const left = parseInt(leftValue) || 0;
-          const right = parseInt(rightValue) || 0;
-          let secs: number;
-          if (leftUnit === 'hours') {
-            secs = left * 3600 + right * 60;
-          } else {
-            secs = left * 60 + right;
-          }
-          if (secs > 0) {
-            onUpdateTime(secs);
-          }
+          const secs = computeSeconds(leftValue, rightValue);
+          if (secs > 0) onUpdateTime(secs);
+          setEditing(false);
+        } else if (status === 'idle' || status === 'completed') {
+          // Keep editing visible, notify parent of pending seconds
+          const secs = computeSeconds(leftValue, rightValue);
+          onPendingChange?.(secs > 0 ? secs : null);
         }
-        setEditing(false);
       }
     });
   };
 
   const handleSubmit = () => {
-    const left = parseInt(leftValue) || 0;
-    const right = parseInt(rightValue) || 0;
-    if (left <= 0 && right <= 0) return;
-    let secs: number;
-    if (leftUnit === 'hours') {
-      secs = left * 3600 + right * 60;
-    } else {
-      secs = left * 60 + right;
-    }
+    const secs = computeSeconds(leftValue, rightValue);
     if (secs <= 0) return;
     if (status === 'paused' && onUpdateTime) {
       onUpdateTime(secs);
@@ -130,11 +124,19 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     setEditing(false);
     setLeftValue('');
     setRightValue('');
+    onPendingChange?.(null);
+  };
+
+  const clearEditing = () => {
+    setEditing(false);
+    setLeftValue('');
+    setRightValue('');
+    onPendingChange?.(null);
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') handleSubmit();
-    if (e.key === 'Escape') setEditing(false);
+    if (e.key === 'Escape') clearEditing();
   };
 
   const circumference = 2 * Math.PI * 140;
