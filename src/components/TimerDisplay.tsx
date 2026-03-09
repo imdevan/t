@@ -1,7 +1,8 @@
 import { formatTime, durationToSeconds, formatDuration } from '@/lib/timer';
 import { TimerStatus } from '@/hooks/useTimer';
+import { TimerTheme } from '@/hooks/useSettings';
 import { X } from 'lucide-react';
-import { useState, useEffect, useRef, KeyboardEvent } from 'react';
+import { useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react';
 
 function extractYoutubeId(url: string): string | null {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
