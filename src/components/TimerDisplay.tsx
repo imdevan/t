@@ -139,10 +139,55 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const circumference = 2 * Math.PI * 140;
   const strokeDashoffset = circumference * (1 - progress);
 
-  const isRainbow = timerTheme === 'rainbow';
+  const isGradient = timerTheme !== 'classic';
 
-  const glowClass = isRainbow
-    ? (status === 'running' || status === 'paused' ? 'timer-rainbow-glow' : status === 'completed' ? 'timer-completed-glow' : '')
+  const themeGradients: Record<string, { stops: { offset: string; color: string }[]; glowClass: string }> = {
+    rainbow: {
+      stops: [
+        { offset: '0%', color: '#ff4444' }, { offset: '17%', color: '#ff9900' },
+        { offset: '33%', color: '#ffee00' }, { offset: '50%', color: '#00cc00' },
+        { offset: '67%', color: '#0099ff' }, { offset: '83%', color: '#cc44ff' },
+        { offset: '100%', color: '#ff4444' },
+      ],
+      glowClass: 'timer-rainbow-glow',
+    },
+    lovable: {
+      stops: [
+        { offset: '0%', color: '#ff5757' }, { offset: '25%', color: '#ff57b9' },
+        { offset: '50%', color: '#b957ff' }, { offset: '75%', color: '#5770ff' },
+        { offset: '100%', color: '#ff5757' },
+      ],
+      glowClass: 'timer-lovable-glow',
+    },
+    cherry: {
+      stops: [
+        { offset: '0%', color: '#ffb7c5' }, { offset: '33%', color: '#ff69b4' },
+        { offset: '66%', color: '#ff1493' }, { offset: '100%', color: '#ffb7c5' },
+      ],
+      glowClass: 'timer-cherry-glow',
+    },
+    wisteria: {
+      stops: [
+        { offset: '0%', color: '#c9a0dc' }, { offset: '25%', color: '#8b5cf6' },
+        { offset: '50%', color: '#6d28d9' }, { offset: '75%', color: '#a78bfa' },
+        { offset: '100%', color: '#c9a0dc' },
+      ],
+      glowClass: 'timer-wisteria-glow',
+    },
+    ocean: {
+      stops: [
+        { offset: '0%', color: '#06b6d4' }, { offset: '25%', color: '#0ea5e9' },
+        { offset: '50%', color: '#3b82f6' }, { offset: '75%', color: '#6366f1' },
+        { offset: '100%', color: '#06b6d4' },
+      ],
+      glowClass: 'timer-ocean-glow',
+    },
+  };
+
+  const currentGradient = themeGradients[timerTheme];
+
+  const glowClass = isGradient
+    ? (status === 'running' || status === 'paused' ? (currentGradient?.glowClass || '') : status === 'completed' ? 'timer-completed-glow' : '')
     : status === 'running'
     ? 'timer-glow-active'
     : status === 'completed'
@@ -150,25 +195,6 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     : status === 'paused'
     ? 'timer-glow'
     : '';
-
-  const ringColor = status === 'running'
-    ? 'text-timer-active'
-    : status === 'completed'
-    ? 'text-timer-completed'
-    : status === 'paused'
-    ? 'text-timer-paused'
-    : 'text-muted';
-
-  // Rainbow colors corresponding to progress segments
-  const rainbowStops = [
-    { offset: '0%', color: '#ff4444' },
-    { offset: '17%', color: '#ff9900' },
-    { offset: '33%', color: '#ffee00' },
-    { offset: '50%', color: '#00cc00' },
-    { offset: '67%', color: '#0099ff' },
-    { offset: '83%', color: '#cc44ff' },
-    { offset: '100%', color: '#ff4444' },
-  ];
 
   return (
     <div
