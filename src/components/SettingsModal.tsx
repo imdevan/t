@@ -150,36 +150,28 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                   <Palette size={14} className="text-muted-foreground" />
                   <span className="text-sm text-foreground">Timer Theme</span>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => onUpdate({ timerTheme: 'classic' })}
-                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
-                      settings.timerTheme === 'classic'
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-muted-foreground/30'
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-full border-[3px] border-primary" />
-                    <span className="text-xs text-foreground font-medium">Classic</span>
-                  </button>
-                  <button
-                    onClick={() => onUpdate({ timerTheme: 'rainbow' })}
-                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
-                      settings.timerTheme === 'rainbow'
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-muted-foreground/30'
-                    }`}
-                  >
-                    <div
-                      className="w-10 h-10 rounded-full"
-                      style={{
-                        background: 'conic-gradient(#f44, #f90, #ff0, #0c0, #09f, #c4f, #f44)',
-                        WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
-                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
-                      }}
-                    />
-                    <span className="text-xs text-foreground font-medium">Rainbow</span>
-                  </button>
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { id: 'classic' as const, label: 'Classic', preview: <div className="w-10 h-10 rounded-full border-[3px] border-primary" /> },
+                    { id: 'rainbow' as const, label: 'Rainbow', preview: <ThemeRing gradient="conic-gradient(#f44, #f90, #ff0, #0c0, #09f, #c4f, #f44)" /> },
+                    { id: 'lovable' as const, label: 'Lovable', preview: <ThemeRing gradient="conic-gradient(#ff5757, #ff57b9, #b957ff, #5770ff, #ff5757)" /> },
+                    { id: 'cherry' as const, label: 'Cherry', preview: <ThemeRing gradient="conic-gradient(#ffb7c5, #ff69b4, #ff1493, #ffb7c5)" /> },
+                    { id: 'wisteria' as const, label: 'Wisteria', preview: <ThemeRing gradient="conic-gradient(#c9a0dc, #8b5cf6, #6d28d9, #a78bfa, #c9a0dc)" /> },
+                    { id: 'ocean' as const, label: 'Ocean', preview: <ThemeRing gradient="conic-gradient(#06b6d4, #0ea5e9, #3b82f6, #6366f1, #06b6d4)" /> },
+                  ]).map(theme => (
+                    <button
+                      key={theme.id}
+                      onClick={() => onUpdate({ timerTheme: theme.id })}
+                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
+                        settings.timerTheme === theme.id
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      {theme.preview}
+                      <span className="text-xs text-foreground font-medium">{theme.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
