@@ -99,6 +99,7 @@ const Index = () => {
           onPause={pause}
           onResume={resume}
           onReset={reset}
+          onStop={stop}
         />
 
         {/* Presets & Input (show when idle or completed) */}
