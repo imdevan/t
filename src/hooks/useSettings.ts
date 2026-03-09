@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'timr-settings';
 
-export type TimerTheme = 'classic' | 'rainbow';
+export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean';
 
 export interface TimrSettings {
   audioEnabled: boolean;
