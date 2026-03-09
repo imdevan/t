@@ -40,11 +40,15 @@ const Index = () => {
     onComplete: handleComplete,
   });
 
+  const [pendingSeconds, setPendingSeconds] = useState<number | null>(null);
+  const timerDisplayRef = useRef<{ clearEditing: () => void }>(null);
+
   useWakeLock(settings.keepAwake, status === 'running');
 
   const startTimer = useCallback((seconds: number, label: string) => {
     addRecent(seconds, label);
     start(seconds);
+    setPendingSeconds(null);
   }, [addRecent, start]);
 
   // URL param handling
