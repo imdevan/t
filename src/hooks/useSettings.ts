@@ -4,6 +4,7 @@ const STORAGE_KEY = 'timr-settings';
 
 export interface TimrSettings {
   audioEnabled: boolean;
+  volume: number;
   defaultUnit: 'seconds' | 'minutes' | 'hours';
   keepAwake: boolean;
   googleFontUrl: string;
