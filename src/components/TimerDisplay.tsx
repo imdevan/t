@@ -139,7 +139,11 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const circumference = 2 * Math.PI * 140;
   const strokeDashoffset = circumference * (1 - progress);
 
-  const glowClass = status === 'running'
+  const isRainbow = timerTheme === 'rainbow';
+
+  const glowClass = isRainbow
+    ? (status === 'running' || status === 'paused' ? 'timer-rainbow-glow' : status === 'completed' ? 'timer-completed-glow' : '')
+    : status === 'running'
     ? 'timer-glow-active'
     : status === 'completed'
     ? 'timer-completed-glow'
@@ -155,6 +159,17 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     ? 'text-timer-paused'
     : 'text-muted';
 
+  // Rainbow colors corresponding to progress segments
+  const rainbowStops = [
+    { offset: '0%', color: '#ff4444' },
+    { offset: '17%', color: '#ff9900' },
+    { offset: '33%', color: '#ffee00' },
+    { offset: '50%', color: '#00cc00' },
+    { offset: '67%', color: '#0099ff' },
+    { offset: '83%', color: '#cc44ff' },
+    { offset: '100%', color: '#ff4444' },
+  ];
+
   return (
     <div
       data-testid="timer-display"
@@ -166,13 +181,40 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         viewBox="0 0 300 300"
         aria-hidden="true"
       >
-        <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="3" className="text-border" />
-        {totalSeconds > 0 && (
+        {isRainbow && (
+          <defs>
+            <linearGradient id="rainbow-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+              {rainbowStops.map((s, i) => (
+                <stop key={i} offset={s.offset} stopColor={s.color} />
+              ))}
+            </linearGradient>
+          </defs>
+        )}
+        {/* Background track */}
+        {isRainbow && totalSeconds > 0 ? (
           <circle
-            cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
-            className={`${ringColor} transition-colors duration-500`}
-            style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease, color 0.5s ease' }}
+            cx="150" cy="150" r="140" fill="none"
+            stroke="url(#rainbow-ring)" strokeWidth="3"
+            opacity={0.15}
           />
+        ) : (
+          <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="3" className="text-border" />
+        )}
+        {/* Active arc */}
+        {totalSeconds > 0 && (
+          isRainbow ? (
+            <circle
+              cx="150" cy="150" r="140" fill="none"
+              stroke="url(#rainbow-ring)" strokeWidth="4" strokeLinecap="round"
+              style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease' }}
+            />
+          ) : (
+            <circle
+              cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
+              className={`${ringColor} transition-colors duration-500`}
+              style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease, color 0.5s ease' }}
+            />
+          )
         )}
       </svg>
 
