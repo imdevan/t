@@ -153,9 +153,9 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     },
     lovable: {
       stops: [
-        { offset: '0%', color: '#ff5757' }, { offset: '25%', color: '#ff57b9' },
-        { offset: '50%', color: '#b957ff' }, { offset: '75%', color: '#5770ff' },
-        { offset: '100%', color: '#ff5757' },
+        { offset: '0%', color: '#ff5757' }, { offset: '20%', color: '#ff57b9' },
+        { offset: '45%', color: '#d957ff' }, { offset: '70%', color: '#b957ff' },
+        { offset: '85%', color: '#ff8a57' }, { offset: '100%', color: '#ff5757' },
       ],
       glowClass: 'timer-lovable-glow',
     },
