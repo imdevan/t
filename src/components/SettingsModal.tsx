@@ -1,4 +1,5 @@
-import { Settings, X, Type, Youtube } from 'lucide-react';
+import { Settings, X, Type, Youtube, Volume2 } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
 import { TimrSettings } from '@/hooks/useSettings';
 
@@ -54,6 +55,27 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                   id="audio-setting"
                 />
               </SettingRow>
+
+              {/* Volume */}
+              {settings.audioEnabled && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Volume2 size={14} className="text-muted-foreground" />
+                    <span className="text-sm text-foreground">Volume</span>
+                    <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                      {Math.round(settings.volume * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    value={[settings.volume]}
+                    onValueChange={([v]) => onUpdate({ volume: v })}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    className="w-full"
+                  />
+                </div>
+              )}
 
               {/* Keep awake */}
               <SettingRow label="Keep screen awake">
