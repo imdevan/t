@@ -9,10 +9,10 @@ export function PresetButton({ label, seconds, onSelect }: PresetButtonProps) {
     <button
       data-testid={`preset-${seconds}`}
       onClick={() => onSelect(seconds, label)}
-      className="px-5 py-3 rounded-lg bg-card text-card-foreground border border-border
+      className="w-full px-2 py-3 rounded-lg bg-card text-card-foreground border border-border
         shadow-soft hover:shadow-medium hover:border-primary/30
         transition-all duration-200 scale-press
-        font-display text-sm sm:text-base font-bold
+        font-display text-sm font-bold
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       {label}

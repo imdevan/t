@@ -12,7 +12,7 @@ export function RecentTimers({ recent, onSelect, onClear }: RecentTimersProps) {
   if (recent.length === 0) return null;
 
   return (
-    <section data-testid="recent-timers" className="w-full max-w-md mx-auto fade-in-up">
+    <section data-testid="recent-timers" className="w-full fade-in-up">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Recent</h2>
         <button

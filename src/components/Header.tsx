@@ -14,7 +14,7 @@ interface HeaderProps {
 
 export function Header({ audioEnabled, onToggleAudio, onToggleTheme, resolvedTheme, settings, onUpdateSettings }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-4 sm:px-8 py-4 w-full max-w-3xl mx-auto" data-testid="header">
+    <header className="flex items-center justify-between px-4 py-4 w-full max-w-lg mx-auto" data-testid="header">
       <h1 className="text-xl font-bold font-display tracking-tight text-foreground">Timr</h1>
       <div className="flex items-center gap-1">
         <AudioToggle enabled={audioEnabled} onToggle={onToggleAudio} />

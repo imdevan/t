@@ -50,7 +50,7 @@ function ControlButton({
   onClick: () => void;
   variant: 'primary' | 'secondary';
 }) {
-  const base = "flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all duration-200 scale-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  const base = "flex items-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold text-sm transition-all duration-200 scale-press focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
   const variants = {
     primary: "bg-primary text-primary-foreground shadow-medium hover:shadow-large",
     secondary: "bg-card text-card-foreground border border-border shadow-soft hover:shadow-medium hover:border-primary/30",

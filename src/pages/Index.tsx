@@ -86,7 +86,7 @@ const Index = () => {
         onUpdateSettings={setSettings}
       />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 gap-6 py-4">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 gap-4 sm:gap-6 py-4">
         {/* Hero: Timer Display */}
         <TimerDisplay
           remaining={remaining}
@@ -135,7 +135,7 @@ const Index = () => {
             />
 
             {/* Presets */}
-            <div className="flex flex-wrap justify-center gap-3" data-testid="presets">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-full" data-testid="presets">
               {PRESETS.map(p => (
                 <PresetButton
                   key={p.seconds}
