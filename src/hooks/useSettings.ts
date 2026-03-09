@@ -83,13 +83,13 @@ export function useSettings() {
     const isDark = root.classList.contains('dark');
 
     // Theme color definitions: [light, dark] pairs as HSL values
-    const themeColors: Record<TimerTheme, {
+    const themeColors: Partial<Record<TimerTheme, {
       primary: [string, string];
       accent: [string, string];
       ring: [string, string];
       timerGlow: [string, string];
       timerActive: [string, string];
-    } | null> = {
+    }>> = {
       classic: null, // uses CSS defaults
       rainbow: {
         primary: ['0 85% 60%', '0 85% 62%'],
