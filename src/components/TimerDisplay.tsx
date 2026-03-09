@@ -178,7 +178,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
 
       {/* Inline edit mode */}
       {!showVideo && editing && (
-        <div className="relative z-10 flex flex-col items-center gap-2" onClick={e => e.stopPropagation()}>
+        <div className="relative z-10 flex flex-col items-center gap-2" onClick={e => e.stopPropagation()} onBlur={handleBlur}>
           <div className="flex items-center gap-1">
             {/* Left input */}
             <div className="flex flex-col items-center">
