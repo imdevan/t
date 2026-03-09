@@ -86,5 +86,5 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
     return clearTimer;
   }, [clearTimer]);
 
-  return { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop };
+  return { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop, updateTime };
 }
