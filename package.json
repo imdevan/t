@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:gh-pages": "VITE_BASE_PATH=/timr/ vite build",
+    "build:gh-pages": "VITE_BASE_PATH=/t/ vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
