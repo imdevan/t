@@ -36,7 +36,7 @@ const Index = () => {
     }
   }, [settings.audioEnabled, settings.volume]);
 
-  const { remaining, totalSeconds, status, progress, start, pause, resume, reset } = useTimer({
+  const { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop } = useTimer({
     onComplete: handleComplete,
   });
 
