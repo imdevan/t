@@ -90,7 +90,7 @@ export function useSettings() {
       timerGlow: [string, string];
       timerActive: [string, string];
     }>> = {
-      classic: null, // uses CSS defaults
+      // classic omitted — uses CSS defaults (burnt orange)
       rainbow: {
         primary: ['0 85% 60%', '0 85% 62%'],
         accent: ['280 80% 60%', '280 75% 65%'],
