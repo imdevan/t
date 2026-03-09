@@ -2,7 +2,13 @@ import { useEffect, useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'timr-settings';
 
-export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean';
+export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean' | 'custom';
+
+export interface CustomGradient {
+  id: string;
+  name: string;
+  colors: string[]; // array of hex colors
+}
 
 export interface TimrSettings {
   audioEnabled: boolean;
@@ -12,6 +18,8 @@ export interface TimrSettings {
   googleFontUrl: string;
   youtubeUrl: string;
   timerTheme: TimerTheme;
+  customGradients: CustomGradient[];
+  activeCustomGradientId: string;
 }
 
 const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap';
@@ -24,6 +32,8 @@ const defaultSettings: TimrSettings = {
   googleFontUrl: DEFAULT_FONT_URL,
   youtubeUrl: '',
   timerTheme: 'classic',
+  customGradients: [],
+  activeCustomGradientId: '',
 };
 
 export function useSettings() {
@@ -73,14 +83,14 @@ export function useSettings() {
     const isDark = root.classList.contains('dark');
 
     // Theme color definitions: [light, dark] pairs as HSL values
-    const themeColors: Record<TimerTheme, {
+    const themeColors: Partial<Record<TimerTheme, {
       primary: [string, string];
       accent: [string, string];
       ring: [string, string];
       timerGlow: [string, string];
       timerActive: [string, string];
-    } | null> = {
-      classic: null, // uses CSS defaults
+    }>> = {
+      // classic omitted — uses CSS defaults (burnt orange)
       rainbow: {
         primary: ['0 85% 60%', '0 85% 62%'],
         accent: ['280 80% 60%', '280 75% 65%'],
@@ -89,11 +99,11 @@ export function useSettings() {
         timerActive: ['280 80% 60%', '280 75% 65%'],
       },
       lovable: {
-        primary: ['340 90% 60%', '340 90% 65%'],
-        accent: ['30 100% 60%', '30 100% 65%'],
-        ring: ['340 90% 60%', '340 90% 65%'],
-        timerGlow: ['340 90% 60%', '340 90% 65%'],
-        timerActive: ['30 100% 55%', '30 100% 60%'],
+        primary: ['335 90% 60%', '335 90% 65%'],
+        accent: ['290 90% 62%', '290 90% 67%'],
+        ring: ['335 90% 60%', '335 90% 65%'],
+        timerGlow: ['335 90% 60%', '335 90% 65%'],
+        timerActive: ['290 90% 58%', '290 85% 63%'],
       },
       cherry: {
         primary: ['330 100% 71%', '330 100% 74%'],
@@ -110,20 +120,22 @@ export function useSettings() {
         timerActive: ['271 81% 46%', '271 81% 55%'],
       },
       ocean: {
-        primary: ['175 85% 45%', '175 85% 50%'],
-        accent: ['199 89% 50%', '199 89% 55%'],
-        ring: ['175 85% 45%', '175 85% 50%'],
-        timerGlow: ['175 85% 45%', '175 85% 50%'],
-        timerActive: ['199 89% 50%', '199 89% 55%'],
+        primary: ['200 90% 48%', '200 90% 52%'],
+        accent: ['217 91% 55%', '217 91% 60%'],
+        ring: ['200 90% 48%', '200 90% 52%'],
+        timerGlow: ['200 90% 48%', '200 90% 52%'],
+        timerActive: ['217 91% 55%', '217 91% 60%'],
       },
     };
 
-    const colors = themeColors[settings.timerTheme];
+    const colors = settings.timerTheme === 'custom'
+      ? null // custom uses its own gradient colors, keep classic base
+      : themeColors[settings.timerTheme];
     const vars = ['--primary', '--accent', '--ring', '--timer-glow', '--timer-active'] as const;
     const keys = ['primary', 'accent', 'ring', 'timerGlow', 'timerActive'] as const;
 
     if (!colors) {
-      // Classic: remove overrides so CSS defaults apply
+      // Classic or Custom: remove overrides so CSS defaults (burnt orange) apply
       vars.forEach(v => root.style.removeProperty(v));
     } else {
       const idx = isDark ? 1 : 0;

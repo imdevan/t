@@ -1,7 +1,7 @@
-import { Settings, X, Type, Youtube, Volume2, Palette } from 'lucide-react';
+import { Settings, X, Type, Youtube, Volume2, Palette, Plus, Trash2 } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
-import { TimrSettings } from '@/hooks/useSettings';
+import { TimrSettings, CustomGradient } from '@/hooks/useSettings';
 
 interface SettingsModalProps {
   settings: TimrSettings;
@@ -10,6 +10,37 @@ interface SettingsModalProps {
 
 export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
   const [open, setOpen] = useState(false);
+  const [newGradientName, setNewGradientName] = useState('');
+  const [newGradientColors, setNewGradientColors] = useState(['#ff5757', '#b957ff', '#5770ff']);
+
+  const addCustomGradient = () => {
+    if (!newGradientName.trim() || newGradientColors.length < 2) return;
+    const gradient: CustomGradient = {
+      id: `custom-${Date.now()}`,
+      name: newGradientName.trim(),
+      colors: [...newGradientColors],
+    };
+    onUpdate({
+      customGradients: [...(settings.customGradients || []), gradient],
+      timerTheme: 'custom',
+      activeCustomGradientId: gradient.id,
+    });
+    setNewGradientName('');
+  };
+
+  const removeCustomGradient = (id: string) => {
+    const updated = (settings.customGradients || []).filter(g => g.id !== id);
+    onUpdate({
+      customGradients: updated,
+      ...(settings.activeCustomGradientId === id
+        ? { timerTheme: 'classic' as const, activeCustomGradientId: '' }
+        : {}),
+    });
+  };
+
+  const selectCustomGradient = (id: string) => {
+    onUpdate({ timerTheme: 'custom', activeCustomGradientId: id });
+  };
 
   return (
     <>
@@ -26,15 +57,13 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-foreground/20 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
 
-          {/* Modal */}
-          <div className="relative bg-popover border border-border rounded-2xl shadow-large w-full max-w-sm mx-4 p-6 fade-in-up">
-            <div className="flex items-center justify-between mb-6">
+          <div className="relative bg-popover border border-border rounded-2xl shadow-large w-full max-w-sm mx-4 max-h-[85vh] flex flex-col fade-in-up">
+            <div className="flex items-center justify-between p-6 pb-0">
               <h2 className="text-lg font-bold font-display">Settings</h2>
               <button
                 onClick={() => setOpen(false)}
@@ -46,7 +75,7 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="overflow-y-auto p-6 pt-4 space-y-5">
 
               {/* Audio */}
               <SettingRow label="Audio notifications">
@@ -152,12 +181,12 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {([
-                   { id: 'classic' as const, label: 'Classic', preview: <div className="w-10 h-10 rounded-full border-[3px] border-primary" /> },
+                    { id: 'classic' as const, label: 'Classic', preview: <div className="w-10 h-10 rounded-full border-[3px]" style={{ borderColor: 'hsl(24 80% 50%)' }} /> },
                     { id: 'rainbow' as const, label: 'Rainbow', preview: <ThemeRing gradient="conic-gradient(#f44, #f90, #ff0, #0c0, #09f, #c4f, #f44)" /> },
-                    { id: 'lovable' as const, label: 'Lovable', preview: <ThemeRing gradient="conic-gradient(#ff5757, #ffa557, #b957ff, #ff5757)" /> },
+                    { id: 'lovable' as const, label: 'Lovable', preview: <ThemeRing gradient="conic-gradient(#ff5757, #ff57b9, #d957ff, #b957ff, #ff8a57, #ff5757)" /> },
                     { id: 'cherry' as const, label: 'Cherry', preview: <ThemeRing gradient="conic-gradient(#ffb7c5, #ff69b4, #ff1493, #ffb7c5)" /> },
                     { id: 'wisteria' as const, label: 'Wisteria', preview: <ThemeRing gradient="conic-gradient(#c9a0dc, #8b5cf6, #6d28d9, #a78bfa, #c9a0dc)" /> },
-                    { id: 'ocean' as const, label: 'Ocean', preview: <ThemeRing gradient="conic-gradient(#06d4a0, #22c55e, #0ea5e9, #3b82f6, #06d4a0)" /> },
+                    { id: 'ocean' as const, label: 'Ocean', preview: <ThemeRing gradient="conic-gradient(#06d4a0, #0ea5e9, #3b82f6, #2563eb, #22c55e, #06d4a0)" /> },
                   ]).map(theme => (
                     <button
                       key={theme.id}
@@ -172,6 +201,98 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                       <span className="text-xs text-foreground font-medium">{theme.label}</span>
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Custom Gradients */}
+              <div className="space-y-3">
+                <span className="text-sm text-foreground font-medium">Custom Gradients</span>
+
+                {/* Saved custom gradients */}
+                {(settings.customGradients || []).length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {(settings.customGradients || []).map(g => (
+                      <div key={g.id} className="relative group">
+                        <button
+                          onClick={() => selectCustomGradient(g.id)}
+                          className={`w-full flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
+                            settings.timerTheme === 'custom' && settings.activeCustomGradientId === g.id
+                              ? 'border-primary bg-primary/10'
+                              : 'border-border hover:border-muted-foreground/30'
+                          }`}
+                        >
+                          <ThemeRing gradient={`conic-gradient(${g.colors.join(', ')}, ${g.colors[0]})`} />
+                          <span className="text-xs text-foreground font-medium truncate w-full text-center">{g.name}</span>
+                        </button>
+                        <button
+                          onClick={() => removeCustomGradient(g.id)}
+                          className="absolute -top-1 -right-1 p-0.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label={`Delete ${g.name}`}
+                        >
+                          <X size={10} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* New custom gradient builder */}
+                <div className="p-3 rounded-xl border border-border bg-card/50 space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Gradient name…"
+                    value={newGradientName}
+                    onChange={e => setNewGradientName(e.target.value)}
+                    className="w-full bg-card border border-border rounded-lg px-3 py-1.5 text-xs text-foreground
+                      placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {newGradientColors.map((color, i) => (
+                      <div key={i} className="flex items-center gap-1">
+                        <input
+                          type="color"
+                          value={color}
+                          onChange={e => {
+                            const updated = [...newGradientColors];
+                            updated[i] = e.target.value;
+                            setNewGradientColors(updated);
+                          }}
+                          className="w-7 h-7 rounded-md border border-border cursor-pointer"
+                        />
+                        {newGradientColors.length > 2 && (
+                          <button
+                            onClick={() => setNewGradientColors(newGradientColors.filter((_, j) => j !== i))}
+                            className="text-muted-foreground hover:text-destructive transition-colors"
+                            aria-label="Remove color"
+                          >
+                            <X size={10} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    {newGradientColors.length < 6 && (
+                      <button
+                        onClick={() => setNewGradientColors([...newGradientColors, '#888888'])}
+                        className="w-7 h-7 rounded-md border border-dashed border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                        aria-label="Add color"
+                      >
+                        <Plus size={12} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Preview */}
+                  <div className="flex items-center gap-3">
+                    <ThemeRing gradient={`conic-gradient(${newGradientColors.join(', ')}, ${newGradientColors[0]})`} />
+                    <button
+                      onClick={addCustomGradient}
+                      disabled={!newGradientName.trim()}
+                      className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium
+                        disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

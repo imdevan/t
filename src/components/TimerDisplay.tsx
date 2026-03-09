@@ -1,6 +1,6 @@
 import { formatTime, durationToSeconds, formatDuration } from '@/lib/timer';
 import { TimerStatus } from '@/hooks/useTimer';
-import { TimerTheme } from '@/hooks/useSettings';
+import { TimerTheme, CustomGradient } from '@/hooks/useSettings';
 import { X } from 'lucide-react';
 import { useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react';
 
@@ -16,11 +16,12 @@ interface TimerDisplayProps {
   progress: number;
   youtubeUrl?: string;
   timerTheme?: TimerTheme;
+  customGradient?: CustomGradient | null;
   onStart?: (seconds: number, label: string) => void;
   onUpdateTime?: (seconds: number) => void;
 }
 
-export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', timerTheme = 'classic', onStart, onUpdateTime }: TimerDisplayProps) {
+export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', timerTheme = 'classic', customGradient, onStart, onUpdateTime }: TimerDisplayProps) {
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -153,9 +154,9 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     },
     lovable: {
       stops: [
-        { offset: '0%', color: '#ff5757' }, { offset: '25%', color: '#ff57b9' },
-        { offset: '50%', color: '#b957ff' }, { offset: '75%', color: '#5770ff' },
-        { offset: '100%', color: '#ff5757' },
+        { offset: '0%', color: '#ff5757' }, { offset: '20%', color: '#ff57b9' },
+        { offset: '45%', color: '#d957ff' }, { offset: '70%', color: '#b957ff' },
+        { offset: '85%', color: '#ff8a57' }, { offset: '100%', color: '#ff5757' },
       ],
       glowClass: 'timer-lovable-glow',
     },
@@ -176,15 +177,26 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     },
     ocean: {
       stops: [
-        { offset: '0%', color: '#06b6d4' }, { offset: '25%', color: '#0ea5e9' },
-        { offset: '50%', color: '#3b82f6' }, { offset: '75%', color: '#6366f1' },
-        { offset: '100%', color: '#06b6d4' },
+        { offset: '0%', color: '#06d4a0' }, { offset: '20%', color: '#0ea5e9' },
+        { offset: '45%', color: '#3b82f6' }, { offset: '70%', color: '#2563eb' },
+        { offset: '85%', color: '#22c55e' }, { offset: '100%', color: '#06d4a0' },
       ],
       glowClass: 'timer-ocean-glow',
     },
   };
 
-  const currentGradient = themeGradients[timerTheme];
+  // Build custom gradient entry if applicable
+  let currentGradient = themeGradients[timerTheme] || null;
+  if (timerTheme === 'custom' && customGradient && customGradient.colors.length >= 2) {
+    const colors = customGradient.colors;
+    const stops = colors.map((c, i) => ({
+      offset: `${Math.round((i / (colors.length - 1)) * 100)}%`,
+      color: c,
+    }));
+    // Add closing stop
+    stops.push({ offset: '100%', color: colors[0] });
+    currentGradient = { stops, glowClass: '' };
+  }
 
   const glowClass = isGradient
     ? (status === 'running' || status === 'paused' ? (currentGradient?.glowClass || '') : status === 'completed' ? 'timer-completed-glow' : '')
