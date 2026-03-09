@@ -68,7 +68,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const canEdit = (status === 'idle' || status === 'completed' || status === 'paused') && !showVideo;
 
   const handleClick = () => {
-    if (canEdit && onStart) {
+    if (canEdit && (onStart || onUpdateTime)) {
       setEditing(true);
       if (remaining > 0) {
         if (leftUnit === 'hours') {
