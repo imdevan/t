@@ -196,6 +196,16 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     ? 'timer-glow'
     : '';
 
+  const ringColor = status === 'running'
+    ? 'text-timer-active'
+    : status === 'completed'
+    ? 'text-timer-completed'
+    : status === 'paused'
+    ? 'text-timer-paused'
+    : 'text-muted';
+
+  const gradientId = `theme-ring-${timerTheme}`;
+
   return (
     <div
       data-testid="timer-display"
@@ -207,20 +217,20 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         viewBox="0 0 300 300"
         aria-hidden="true"
       >
-        {isRainbow && (
+        {isGradient && currentGradient && (
           <defs>
-            <linearGradient id="rainbow-ring" x1="0%" y1="0%" x2="100%" y2="100%">
-              {rainbowStops.map((s, i) => (
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+              {currentGradient.stops.map((s, i) => (
                 <stop key={i} offset={s.offset} stopColor={s.color} />
               ))}
             </linearGradient>
           </defs>
         )}
         {/* Background track */}
-        {isRainbow && totalSeconds > 0 ? (
+        {isGradient && totalSeconds > 0 ? (
           <circle
             cx="150" cy="150" r="140" fill="none"
-            stroke="url(#rainbow-ring)" strokeWidth="3"
+            stroke={`url(#${gradientId})`} strokeWidth="3"
             opacity={0.15}
           />
         ) : (
@@ -228,10 +238,10 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         )}
         {/* Active arc */}
         {totalSeconds > 0 && (
-          isRainbow ? (
+          isGradient ? (
             <circle
               cx="150" cy="150" r="140" fill="none"
-              stroke="url(#rainbow-ring)" strokeWidth="4" strokeLinecap="round"
+              stroke={`url(#${gradientId})`} strokeWidth="4" strokeLinecap="round"
               style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease' }}
             />
           ) : (

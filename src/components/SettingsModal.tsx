@@ -182,6 +182,19 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
   );
 }
 
+function ThemeRing({ gradient }: { gradient: string }) {
+  return (
+    <div
+      className="w-10 h-10 rounded-full"
+      style={{
+        background: gradient,
+        WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
+        mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
+      }}
+    />
+  );
+}
+
 function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between">
