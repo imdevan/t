@@ -143,6 +143,45 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                   Plays inside the timer ring when the countdown ends
                 </p>
               </div>
+
+              {/* Timer Theme */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Palette size={14} className="text-muted-foreground" />
+                  <span className="text-sm text-foreground">Timer Theme</span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onUpdate({ timerTheme: 'classic' })}
+                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
+                      settings.timerTheme === 'classic'
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground/30'
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-full border-[3px] border-primary" />
+                    <span className="text-xs text-foreground font-medium">Classic</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdate({ timerTheme: 'rainbow' })}
+                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all duration-200 ${
+                      settings.timerTheme === 'rainbow'
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground/30'
+                    }`}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full"
+                      style={{
+                        background: 'conic-gradient(#f44, #f90, #ff0, #0c0, #09f, #c4f, #f44)',
+                        WebkitMask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
+                        mask: 'radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))',
+                      }}
+                    />
+                    <span className="text-xs text-foreground font-medium">Rainbow</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
