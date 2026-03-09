@@ -90,6 +90,7 @@ const Index = () => {
           status={status}
           progress={progress}
           youtubeUrl={settings.youtubeUrl}
+          timerTheme={settings.timerTheme}
           onStart={startTimer}
           onUpdateTime={updateTime}
         />
