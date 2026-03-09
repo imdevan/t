@@ -176,9 +176,9 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     },
     ocean: {
       stops: [
-        { offset: '0%', color: '#06b6d4' }, { offset: '25%', color: '#0ea5e9' },
-        { offset: '50%', color: '#3b82f6' }, { offset: '75%', color: '#6366f1' },
-        { offset: '100%', color: '#06b6d4' },
+        { offset: '0%', color: '#06d4a0' }, { offset: '20%', color: '#0ea5e9' },
+        { offset: '45%', color: '#3b82f6' }, { offset: '70%', color: '#2563eb' },
+        { offset: '85%', color: '#22c55e' }, { offset: '100%', color: '#06d4a0' },
       ],
       glowClass: 'timer-ocean-glow',
     },

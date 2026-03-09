@@ -128,12 +128,14 @@ export function useSettings() {
       },
     };
 
-    const colors = themeColors[settings.timerTheme];
+    const colors = settings.timerTheme === 'custom'
+      ? null // custom uses its own gradient colors, keep classic base
+      : themeColors[settings.timerTheme];
     const vars = ['--primary', '--accent', '--ring', '--timer-glow', '--timer-active'] as const;
     const keys = ['primary', 'accent', 'ring', 'timerGlow', 'timerActive'] as const;
 
     if (!colors) {
-      // Classic: remove overrides so CSS defaults apply
+      // Classic or Custom: remove overrides so CSS defaults (burnt orange) apply
       vars.forEach(v => root.style.removeProperty(v));
     } else {
       const idx = isDark ? 1 : 0;
