@@ -18,7 +18,7 @@ interface TimerDisplayProps {
   onUpdateTime?: (seconds: number) => void;
 }
 
-export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', onStart }: TimerDisplayProps) {
+export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', onStart, onUpdateTime }: TimerDisplayProps) {
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
   const [editing, setEditing] = useState(false);
