@@ -341,23 +341,6 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
             </div>
           </div>
 
-          {status !== 'paused' && (
-            <div className="flex items-center gap-2 mt-1">
-              <button
-                onClick={handleSubmit}
-                disabled={(parseInt(leftValue) || 0) <= 0 && (parseInt(rightValue) || 0) <= 0}
-                className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground font-bold text-xs transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Go
-              </button>
-              <button
-                onClick={() => setEditing(false)}
-                className="px-2 py-1.5 rounded-md text-muted-foreground hover:text-foreground text-xs transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-          )}
         </div>
       )}
 
