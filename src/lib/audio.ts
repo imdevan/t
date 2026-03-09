@@ -18,7 +18,7 @@ export function playCompletionSound(volume: number = 0.5) {
     osc.type = 'sine';
     osc.frequency.value = freq;
     gain.gain.setValueAtTime(0, now + i * 0.2);
-    gain.gain.linearRampToValueAtTime(volume * 0.3, now + i * 0.2 + 0.05);
+    gain.gain.linearRampToValueAtTime(volume, now + i * 0.2 + 0.05);
     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.2 + 0.8);
     osc.connect(gain);
     gain.connect(ctx.destination);
