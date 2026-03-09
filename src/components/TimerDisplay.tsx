@@ -91,7 +91,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         <div className="absolute inset-0 z-20 flex items-center justify-center animate-scale-in">
           <div className="relative w-[90%] h-[90%] rounded-full overflow-hidden">
             <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
               allow="autoplay; encrypted-media"
               allowFullScreen
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
