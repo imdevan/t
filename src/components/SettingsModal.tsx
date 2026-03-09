@@ -1,7 +1,8 @@
-import { Settings, X, Type, Youtube, Volume2, Palette, Plus, ChevronDown } from 'lucide-react';
+import { Settings, X, Type, Youtube, Volume2, Palette, Plus, ChevronDown, Play } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
 import { TimrSettings, CustomGradient } from '@/hooks/useSettings';
+import { COMPLETION_SOUNDS, playCompletionSound, CompletionSound } from '@/lib/audio';
 
 interface SettingsModalProps {
   settings: TimrSettings;
