@@ -63,7 +63,7 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
             onClick={() => setOpen(false)}
           />
 
-          <div className="relative bg-popover border border-border rounded-2xl shadow-large w-full max-w-sm mx-4 max-h-[85vh] flex flex-col fade-in-up">
+          <div className="relative bg-popover border border-border rounded-2xl shadow-large w-full max-w-md mx-4 max-h-[85vh] flex flex-col fade-in-up">
             <div className="flex items-center justify-between p-6 pb-0">
               <h2 className="text-lg font-bold font-display">Settings</h2>
               <button
