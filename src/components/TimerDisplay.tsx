@@ -16,6 +16,7 @@ interface TimerDisplayProps {
   progress: number;
   youtubeUrl?: string;
   timerTheme?: TimerTheme;
+  customGradient?: CustomGradient | null;
   onStart?: (seconds: number, label: string) => void;
   onUpdateTime?: (seconds: number) => void;
 }
