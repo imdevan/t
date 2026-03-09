@@ -26,8 +26,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
   const [editing, setEditing] = useState(false);
-  const playerContainerRef = useRef<HTMLDivElement>(null);
-  const ytPlayerRef = useRef<any>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [leftValue, setLeftValue] = useState('');
   const [rightValue, setRightValue] = useState('');
   const [leftUnit, setLeftUnit] = useState<'minutes' | 'hours'>(() => {
@@ -56,43 +55,15 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   }, [status, videoId]);
 
   useEffect(() => {
-    if (!showVideo || !videoId) {
-      if (ytPlayerRef.current) {
-        ytPlayerRef.current.destroy();
-        ytPlayerRef.current = null;
-      }
-      return;
-    }
-
-    const initPlayer = () => {
-      if (!playerContainerRef.current) return;
-      ytPlayerRef.current = new (window as any).YT.Player(playerContainerRef.current, {
-        videoId,
-        playerVars: { autoplay: 1, mute: 1, rel: 0, modestbranding: 1 },
-        events: {
-          onReady: (e: any) => { e.target.unMute(); e.target.setVolume(100); },
-        },
-      });
+    if (!showVideo || !iframeRef.current) return;
+    const iframe = iframeRef.current;
+    const onLoad = () => {
+      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'unMute', args: [] }), '*');
+      iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [100] }), '*');
     };
-
-    if ((window as any).YT?.Player) {
-      initPlayer();
-    } else {
-      (window as any).onYouTubeIframeAPIReady = initPlayer;
-      if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(tag);
-      }
-    }
-
-    return () => {
-      if (ytPlayerRef.current) {
-        ytPlayerRef.current.destroy();
-        ytPlayerRef.current = null;
-      }
-    };
-  }, [showVideo, videoId]);
+    iframe.addEventListener('load', onLoad);
+    return () => iframe.removeEventListener('load', onLoad);
+  }, [showVideo]);
 
   useEffect(() => {
     if (status === 'running') {
@@ -313,10 +284,12 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
       {showVideo && videoId && (
         <div className="absolute inset-0 z-20 flex items-center justify-center animate-scale-in">
           <div className="relative w-[90%] h-[90%] rounded-full overflow-hidden">
-            <div
-              ref={playerContainerRef}
+            <iframe
+              ref={iframeRef}
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&enablejsapi=1&rel=0&modestbranding=1`}
+              allow="autoplay; encrypted-media" allowFullScreen
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{ width: '300%', height: '100%' }}
+              style={{ width: '300%', height: '100%' }} title="Completion video"
             />
           </div>
           <button
