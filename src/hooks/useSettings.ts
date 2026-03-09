@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-
+import { CompletionSound } from '@/lib/audio';
 const STORAGE_KEY = 'timr-settings';
 
 export type TimerTheme = 'classic' | 'rainbow' | 'lovable' | 'cherry' | 'wisteria' | 'ocean' | 'custom';
