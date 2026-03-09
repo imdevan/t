@@ -155,39 +155,69 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
 
       {/* Inline edit mode */}
       {!showVideo && editing && (
-        <div className="relative z-10 flex flex-col items-center gap-3" onClick={e => e.stopPropagation()}>
-          <input
-            ref={inputRef}
-            type="number"
-            min="1"
-            value={editValue}
-            onChange={e => setEditValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="0"
-            className="w-24 text-center text-5xl sm:text-6xl font-bold bg-transparent border-b-2 border-primary/50
-              text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary
-              transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <div className="flex items-center gap-2">
-            <select
-              value={editUnit}
-              onChange={e => setEditUnit(e.target.value as 'seconds' | 'minutes' | 'hours')}
-              className="px-2 py-1 rounded-md bg-card border border-border text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-            >
-              <option value="seconds">sec</option>
-              <option value="minutes">min</option>
-              <option value="hours">hr</option>
-            </select>
+        <div className="relative z-10 flex flex-col items-center gap-2" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center gap-1">
+            {/* Left input */}
+            <div className="flex flex-col items-center">
+              <input
+                ref={leftInputRef}
+                type="number"
+                min="0"
+                max="99"
+                value={leftValue}
+                onChange={e => {
+                  const v = e.target.value.slice(0, 2);
+                  setLeftValue(v);
+                  if (v.length === 2) rightInputRef.current?.focus();
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder="00"
+                className="w-16 sm:w-20 text-center text-5xl sm:text-6xl font-bold bg-transparent border-b-2 border-primary/50
+                  text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary
+                  transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <select
+                value={leftUnit}
+                onChange={e => setLeftUnit(e.target.value as 'minutes' | 'hours')}
+                className="mt-1 px-2 py-0.5 rounded-md bg-card border border-border text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              >
+                <option value="minutes">min</option>
+                <option value="hours">hr</option>
+              </select>
+            </div>
+
+            <span className="text-4xl sm:text-5xl font-bold text-muted-foreground mb-5">:</span>
+
+            {/* Right input */}
+            <div className="flex flex-col items-center">
+              <input
+                ref={rightInputRef}
+                type="number"
+                min="0"
+                max="59"
+                value={rightValue}
+                onChange={e => setRightValue(e.target.value.slice(0, 2))}
+                onKeyDown={handleKeyDown}
+                placeholder="00"
+                className="w-16 sm:w-20 text-center text-5xl sm:text-6xl font-bold bg-transparent border-b-2 border-primary/50
+                  text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary
+                  transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <span className="mt-1 px-2 py-0.5 text-xs text-muted-foreground">{rightUnit}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-1">
             <button
               onClick={handleSubmit}
-              disabled={!editValue || parseFloat(editValue) <= 0}
-              className="px-3 py-1 rounded-md bg-primary text-primary-foreground font-bold text-xs transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              disabled={(parseInt(leftValue) || 0) <= 0 && (parseInt(rightValue) || 0) <= 0}
+              className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground font-bold text-xs transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Go
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="px-2 py-1 rounded-md text-muted-foreground hover:text-foreground text-xs transition-colors"
+              className="px-2 py-1.5 rounded-md text-muted-foreground hover:text-foreground text-xs transition-colors"
             >
               ✕
             </button>
