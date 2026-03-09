@@ -89,6 +89,20 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     const container = e.currentTarget;
     requestAnimationFrame(() => {
       if (!container.contains(document.activeElement)) {
+        // When blurring while paused, update the time if values were changed
+        if (status === 'paused' && onUpdateTime) {
+          const left = parseInt(leftValue) || 0;
+          const right = parseInt(rightValue) || 0;
+          let secs: number;
+          if (leftUnit === 'hours') {
+            secs = left * 3600 + right * 60;
+          } else {
+            secs = left * 60 + right;
+          }
+          if (secs > 0) {
+            onUpdateTime(secs);
+          }
+        }
         setEditing(false);
       }
     });
