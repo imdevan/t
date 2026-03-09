@@ -286,11 +286,11 @@ function CustomGradientsSection({
             className="w-full bg-card border border-border rounded-lg px-3 py-1.5 text-xs text-foreground
               placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="space-y-2">
             {newGradientColors.map((color, i) => (
-              <div key={i} className="relative group/color">
+              <div key={i} className="flex items-center gap-2 group/color">
                 <label
-                  className="block w-8 h-8 rounded-full cursor-pointer border-2 border-border hover:border-foreground/40 transition-colors overflow-hidden"
+                  className="block w-8 h-8 rounded-full cursor-pointer border-2 border-border hover:border-foreground/40 transition-colors shrink-0"
                   style={{ backgroundColor: color }}
                 >
                   <input
@@ -304,10 +304,24 @@ function CustomGradientsSection({
                     className="sr-only"
                   />
                 </label>
+                <input
+                  type="text"
+                  value={color}
+                  onChange={e => {
+                    let v = e.target.value;
+                    if (!v.startsWith('#')) v = '#' + v;
+                    const updated = [...newGradientColors];
+                    updated[i] = v;
+                    setNewGradientColors(updated);
+                  }}
+                  maxLength={7}
+                  className="w-20 bg-card border border-border rounded-lg px-2 py-1 text-xs text-foreground font-mono
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
                 {newGradientColors.length > 2 && (
                   <button
                     onClick={() => setNewGradientColors(newGradientColors.filter((_, j) => j !== i))}
-                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center
+                    className="w-4 h-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center
                       opacity-0 group-hover/color:opacity-100 transition-opacity"
                     aria-label="Remove color"
                   >

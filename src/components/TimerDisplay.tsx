@@ -136,7 +136,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter') handleSubmit();
-    if (e.key === 'Escape') setEditing(false);
+    if (e.key === 'Escape') clearEditing();
   };
 
   const circumference = 2 * Math.PI * 140;
