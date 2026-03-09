@@ -82,6 +82,23 @@ export function useSettings() {
     const root = document.documentElement;
     const isDark = root.classList.contains('dark');
 
+    const hexToHsl = (hex: string): string => {
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        else if (max === g) h = ((b - r) / d + 2) / 6;
+        else h = ((r - g) / d + 4) / 6;
+      }
+      return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+    };
+
     // Theme color definitions: [light, dark] pairs as HSL values
     const themeColors: Partial<Record<TimerTheme, {
       primary: [string, string];
@@ -90,7 +107,6 @@ export function useSettings() {
       timerGlow: [string, string];
       timerActive: [string, string];
     }>> = {
-      // classic omitted — uses CSS defaults (burnt orange)
       rainbow: {
         primary: ['0 85% 60%', '0 85% 62%'],
         accent: ['280 80% 60%', '280 75% 65%'],
@@ -128,22 +144,36 @@ export function useSettings() {
       },
     };
 
-    const colors = settings.timerTheme === 'custom'
-      ? null // custom uses its own gradient colors, keep classic base
-      : themeColors[settings.timerTheme];
     const vars = ['--primary', '--accent', '--ring', '--timer-glow', '--timer-active'] as const;
     const keys = ['primary', 'accent', 'ring', 'timerGlow', 'timerActive'] as const;
 
-    if (!colors) {
-      // Classic or Custom: remove overrides so CSS defaults (burnt orange) apply
+    if (settings.timerTheme === 'classic') {
+      // Classic: remove overrides so CSS defaults (burnt orange) apply
       vars.forEach(v => root.style.removeProperty(v));
+    } else if (settings.timerTheme === 'custom') {
+      // Custom gradient: derive colors from gradient's hex colors
+      const gradient = (settings.customGradients || []).find(g => g.id === settings.activeCustomGradientId);
+      if (gradient && gradient.colors.length >= 2) {
+        const primaryHsl = hexToHsl(gradient.colors[0]);
+        const accentHsl = hexToHsl(gradient.colors[1]);
+        root.style.setProperty('--primary', primaryHsl);
+        root.style.setProperty('--accent', accentHsl);
+        root.style.setProperty('--ring', primaryHsl);
+        root.style.setProperty('--timer-glow', primaryHsl);
+        root.style.setProperty('--timer-active', accentHsl);
+      } else {
+        vars.forEach(v => root.style.removeProperty(v));
+      }
     } else {
-      const idx = isDark ? 1 : 0;
-      keys.forEach((key, i) => {
-        root.style.setProperty(vars[i], colors[key][idx]);
-      });
+      const colors = themeColors[settings.timerTheme];
+      if (colors) {
+        const idx = isDark ? 1 : 0;
+        keys.forEach((key, i) => {
+          root.style.setProperty(vars[i], colors[key][idx]);
+        });
+      }
     }
-  }, [settings.timerTheme]);
+  }, [settings.timerTheme, settings.activeCustomGradientId, settings.customGradients]);
 
   return { settings, setSettings };
 }
