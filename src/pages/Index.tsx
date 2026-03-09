@@ -49,9 +49,10 @@ const Index = () => {
 
   // URL param handling
   useEffect(() => {
-    const timerParam = searchParams.get('timer');
-    if (timerParam) {
-      const seconds = parseTimerParam(timerParam);
+    // Parse raw query string: /timer?10 → "10", /timer?1:30m → "1:30m"
+    const raw = location.search.replace(/^\?/, '');
+    if (raw) {
+      const seconds = parseTimerParam(raw);
       if (seconds && seconds > 0) {
         startTimer(seconds, formatDuration(seconds));
       }
