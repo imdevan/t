@@ -92,7 +92,7 @@ const Index = () => {
           youtubeUrl={settings.youtubeUrl}
           onStart={startTimer}
           onUpdateTime={updateTime}
-
+        />
         {/* Controls */}
         <TimerControls
           status={status}
