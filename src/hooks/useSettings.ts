@@ -35,5 +35,29 @@ export function useSettings() {
     });
   }, []);
 
+  // Apply Google Font dynamically
+  useEffect(() => {
+    const url = settings.googleFontUrl;
+    if (!url) return;
+
+    const id = 'timr-google-font';
+    let link = document.getElementById(id) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = id;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    link.href = url;
+
+    // Extract font family name from URL
+    const match = url.match(/family=([^:&]+)/);
+    if (match) {
+      const fontFamily = decodeURIComponent(match[1]).replace(/\+/g, ' ');
+      document.documentElement.style.setProperty('--font-display', `'${fontFamily}', cursive`);
+      document.documentElement.style.setProperty('--font-body', `'${fontFamily}', cursive`);
+    }
+  }, [settings.googleFontUrl]);
+
   return { settings, setSettings };
 }

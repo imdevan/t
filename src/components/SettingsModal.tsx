@@ -78,6 +78,27 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                   <option value="hours">Hours</option>
                 </select>
               </SettingRow>
+
+              {/* Google Font URL */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Type size={14} className="text-muted-foreground" />
+                  <span className="text-sm text-foreground">Google Font</span>
+                </div>
+                <input
+                  type="url"
+                  placeholder="Paste Google Fonts CSS URL…"
+                  value={settings.googleFontUrl}
+                  onChange={e => onUpdate({ googleFontUrl: e.target.value })}
+                  className="w-full bg-card border border-border rounded-lg px-3 py-2 text-xs text-foreground
+                    placeholder:text-muted-foreground
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                    transition-colors"
+                />
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  Paste a Google Fonts CSS URL, e.g. fonts.googleapis.com/css2?family=Inter
+                </p>
+              </div>
             </div>
           </div>
         </div>
