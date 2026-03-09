@@ -91,6 +91,11 @@ const Index = () => {
           progress={progress}
           youtubeUrl={settings.youtubeUrl}
           timerTheme={settings.timerTheme}
+          customGradient={
+            settings.timerTheme === 'custom'
+              ? (settings.customGradients || []).find(g => g.id === settings.activeCustomGradientId) || null
+              : null
+          }
           onStart={startTimer}
           onUpdateTime={updateTime}
         />
