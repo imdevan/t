@@ -75,7 +75,7 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
               </button>
             </div>
 
-            <div className="overflow-y-auto p-6 pt-4 space-y-5">
+            <div className="overflow-y-auto p-6 pt-4 space-y-5 mac-scrollbar">
 
               {/* Audio */}
               <SettingRow label="Audio notifications">
