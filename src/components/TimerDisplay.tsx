@@ -1,7 +1,7 @@
-import { formatTime } from '@/lib/timer';
+import { formatTime, durationToSeconds, formatDuration } from '@/lib/timer';
 import { TimerStatus } from '@/hooks/useTimer';
 import { X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, KeyboardEvent } from 'react';
 
 function extractYoutubeId(url: string): string | null {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
@@ -14,11 +14,16 @@ interface TimerDisplayProps {
   status: TimerStatus;
   progress: number;
   youtubeUrl?: string;
+  onStart?: (seconds: number, label: string) => void;
 }
 
-export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '' }: TimerDisplayProps) {
+export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', onStart }: TimerDisplayProps) {
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
   const [showVideo, setShowVideo] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+  const [editUnit, setEditUnit] = useState<'seconds' | 'minutes' | 'hours'>('minutes');
+  const inputRef = useRef<HTMLInputElement>(null);
   const videoId = extractYoutubeId(youtubeUrl);
 
   useEffect(() => {
@@ -28,6 +33,42 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
       setShowVideo(false);
     }
   }, [status, videoId]);
+
+  useEffect(() => {
+    if (status === 'running' || status === 'paused') {
+      setEditing(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (editing) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [editing]);
+
+  const canEdit = (status === 'idle' || status === 'completed') && !showVideo;
+
+  const handleClick = () => {
+    if (canEdit && onStart) {
+      setEditing(true);
+      setEditValue('');
+    }
+  };
+
+  const handleSubmit = () => {
+    const num = parseFloat(editValue);
+    if (isNaN(num) || num <= 0 || !onStart) return;
+    const secs = durationToSeconds(Math.round(num), editUnit);
+    onStart(secs, formatDuration(secs));
+    setEditing(false);
+    setEditValue('');
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') handleSubmit();
+    if (e.key === 'Escape') setEditing(false);
+  };
+
   const circumference = 2 * Math.PI * 140;
   const strokeDashoffset = circumference * (1 - progress);
 
@@ -58,30 +99,12 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         viewBox="0 0 300 300"
         aria-hidden="true"
       >
-        <circle
-          cx="150"
-          cy="150"
-          r="140"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          className="text-border"
-        />
+        <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="3" className="text-border" />
         {totalSeconds > 0 && (
           <circle
-            cx="150"
-            cy="150"
-            r="140"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4"
-            strokeLinecap="round"
+            cx="150" cy="150" r="140" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
             className={`${ringColor} transition-colors duration-500`}
-            style={{
-              strokeDasharray: circumference,
-              strokeDashoffset,
-              transition: 'stroke-dashoffset 0.3s ease, color 0.5s ease',
-            }}
+            style={{ strokeDasharray: circumference, strokeDashoffset, transition: 'stroke-dashoffset 0.3s ease, color 0.5s ease' }}
           />
         )}
       </svg>
@@ -92,18 +115,14 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
           <div className="relative w-[90%] h-[90%] rounded-full overflow-hidden">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
-              allow="autoplay; encrypted-media"
-              allowFullScreen
+              allow="autoplay; encrypted-media" allowFullScreen
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              style={{ width: '300%', height: '100%' }}
-              title="Completion video"
+              style={{ width: '300%', height: '100%' }} title="Completion video"
             />
           </div>
           <button
             onClick={() => setShowVideo(false)}
-            className="absolute top-2 right-2 z-30 p-1.5 rounded-full bg-background/80 backdrop-blur-sm
-              border border-border text-foreground hover:bg-background transition-colors
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute top-2 right-2 z-30 p-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Close video"
           >
             <X size={14} />
@@ -111,9 +130,57 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
         </div>
       )}
 
+      {/* Inline edit mode */}
+      {!showVideo && editing && (
+        <div className="relative z-10 flex flex-col items-center gap-3" onClick={e => e.stopPropagation()}>
+          <input
+            ref={inputRef}
+            type="number"
+            min="1"
+            value={editValue}
+            onChange={e => setEditValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="0"
+            className="w-24 text-center text-5xl sm:text-6xl font-bold bg-transparent border-b-2 border-primary/50
+              text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary
+              transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          <div className="flex items-center gap-2">
+            <select
+              value={editUnit}
+              onChange={e => setEditUnit(e.target.value as 'seconds' | 'minutes' | 'hours')}
+              className="px-2 py-1 rounded-md bg-card border border-border text-foreground text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            >
+              <option value="seconds">sec</option>
+              <option value="minutes">min</option>
+              <option value="hours">hr</option>
+            </select>
+            <button
+              onClick={handleSubmit}
+              disabled={!editValue || parseFloat(editValue) <= 0}
+              className="px-3 py-1 rounded-md bg-primary text-primary-foreground font-bold text-xs transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Go
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="px-2 py-1 rounded-md text-muted-foreground hover:text-foreground text-xs transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Time display */}
-      {!showVideo && (
-        <div className={`relative z-10 flex items-baseline gap-1 select-none ${status === 'completed' ? 'timer-pulse' : ''}`}>
+      {!showVideo && !editing && (
+        <div
+          className={`relative z-10 flex items-baseline gap-1 select-none ${status === 'completed' ? 'timer-pulse' : ''} ${canEdit ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+          onClick={handleClick}
+          role={canEdit ? 'button' : undefined}
+          tabIndex={canEdit ? 0 : undefined}
+          aria-label={canEdit ? 'Click to enter custom time' : undefined}
+        >
           {hasHours && (
             <>
               <TimeSegment value={hours} label="h" status={status} />
