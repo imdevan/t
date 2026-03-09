@@ -19,6 +19,7 @@ interface TimerDisplayProps {
   customGradient?: CustomGradient | null;
   onStart?: (seconds: number, label: string) => void;
   onUpdateTime?: (seconds: number) => void;
+  onPendingChange?: (seconds: number | null) => void;
 }
 
 export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '', timerTheme = 'classic', customGradient, onStart, onUpdateTime }: TimerDisplayProps) {
