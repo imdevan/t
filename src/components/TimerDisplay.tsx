@@ -16,8 +16,18 @@ interface TimerDisplayProps {
   youtubeUrl?: string;
 }
 
-export function TimerDisplay({ remaining, totalSeconds, status, progress }: TimerDisplayProps) {
+export function TimerDisplay({ remaining, totalSeconds, status, progress, youtubeUrl = '' }: TimerDisplayProps) {
   const { hours, minutes, seconds, hasHours } = formatTime(remaining);
+  const [showVideo, setShowVideo] = useState(false);
+  const videoId = extractYoutubeId(youtubeUrl);
+
+  useEffect(() => {
+    if (status === 'completed' && videoId) {
+      setShowVideo(true);
+    } else if (status === 'idle' || status === 'running') {
+      setShowVideo(false);
+    }
+  }, [status, videoId]);
   const circumference = 2 * Math.PI * 140;
   const strokeDashoffset = circumference * (1 - progress);
 
