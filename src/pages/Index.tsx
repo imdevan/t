@@ -103,6 +103,13 @@ const Index = () => {
         {/* Presets & Input (show when idle or completed) */}
         {(status === 'idle' || status === 'completed') && (
           <section className="w-full max-w-lg mx-auto space-y-8 fade-in-up">
+            {/* Recent */}
+            <RecentTimers
+              recent={recent}
+              onSelect={startTimer}
+              onClear={clearRecent}
+            />
+
             {/* Presets */}
             <div className="flex flex-wrap justify-center gap-3" data-testid="presets">
               {PRESETS.map(p => (
@@ -114,19 +121,6 @@ const Index = () => {
                 />
               ))}
             </div>
-
-            {/* Custom input */}
-            <CustomTimerInput
-              defaultUnit={settings.defaultUnit}
-              onStart={startTimer}
-            />
-
-            {/* Recent */}
-            <RecentTimers
-              recent={recent}
-              onSelect={startTimer}
-              onClear={clearRecent}
-            />
           </section>
         )}
       </main>
