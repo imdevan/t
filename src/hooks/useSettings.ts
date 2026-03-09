@@ -12,6 +12,7 @@ export interface CustomGradient {
 
 export interface TimrSettings {
   audioEnabled: boolean;
+  completionSound: CompletionSound;
   volume: number;
   defaultUnit: 'seconds' | 'minutes' | 'hours';
   keepAwake: boolean;
