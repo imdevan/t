@@ -88,6 +88,7 @@ const Index = () => {
           totalSeconds={totalSeconds}
           status={status}
           progress={progress}
+          youtubeUrl={settings.youtubeUrl}
         />
 
         {/* Controls */}

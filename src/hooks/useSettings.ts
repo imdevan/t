@@ -17,6 +17,7 @@ const defaultSettings: TimrSettings = {
   defaultUnit: 'minutes',
   keepAwake: true,
   googleFontUrl: DEFAULT_FONT_URL,
+  youtubeUrl: '',
 };
 
 export function useSettings() {
