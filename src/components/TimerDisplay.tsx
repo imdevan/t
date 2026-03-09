@@ -65,9 +65,32 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
   const handleClick = () => {
     if (canEdit && onStart) {
       setEditing(true);
-      setLeftValue('');
-      setRightValue('');
+      if (remaining > 0) {
+        if (leftUnit === 'hours') {
+          const h = Math.floor(remaining / 3600);
+          const m = Math.floor((remaining % 3600) / 60);
+          setLeftValue(h > 0 ? String(h) : '');
+          setRightValue(m > 0 ? String(m) : '');
+        } else {
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          setLeftValue(m > 0 ? String(m) : '');
+          setRightValue(s > 0 ? String(s) : '');
+        }
+      } else {
+        setLeftValue('');
+        setRightValue('');
+      }
     }
+  };
+
+  const handleBlur = (e: React.FocusEvent) => {
+    const container = e.currentTarget;
+    requestAnimationFrame(() => {
+      if (!container.contains(document.activeElement)) {
+        setEditing(false);
+      }
+    });
   };
 
   const handleSubmit = () => {
