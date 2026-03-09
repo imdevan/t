@@ -11,7 +11,21 @@ export function formatTime(totalSeconds: number): { hours: string; minutes: stri
 }
 
 export function parseTimerParam(param: string): number | null {
-  const match = param.match(/^(\d+(?:\.\d+)?)(s|m|h)?$/i);
+  // Support colon format: 1:30 (1h 30m), 1:30m (1m 30s)
+  const colonMatch = param.match(/^(\d+):(\d+)(m|s)?$/i);
+  if (colonMatch) {
+    const left = parseInt(colonMatch[1]);
+    const right = parseInt(colonMatch[2]);
+    const suffix = (colonMatch[3] || '').toLowerCase();
+    if (suffix === 'm' || suffix === 's') {
+      // e.g. 1:30m → 1 min 30 sec
+      return left * 60 + right;
+    }
+    // e.g. 1:30 → 1 hour 30 min
+    return left * 3600 + right * 60;
+  }
+
+  const match = param.match(/^(\d+(?:\.\d+)?)(s|m|h|d)?$/i);
   if (!match) return null;
   const value = parseFloat(match[1]);
   const unit = (match[2] || 'm').toLowerCase();
@@ -19,6 +33,7 @@ export function parseTimerParam(param: string): number | null {
     case 's': return Math.round(value);
     case 'm': return Math.round(value * 60);
     case 'h': return Math.round(value * 3600);
+    case 'd': return Math.round(value * 86400);
     default: return Math.round(value * 60);
   }
 }
