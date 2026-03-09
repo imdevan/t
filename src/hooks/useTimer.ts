@@ -75,11 +75,16 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
     setStatus('idle');
   }, [clearTimer]);
 
+  const updateTime = useCallback((seconds: number) => {
+    setTotalSeconds(seconds);
+    setRemaining(seconds);
+  }, []);
+
   const progress = totalSeconds > 0 ? (totalSeconds - remaining) / totalSeconds : 0;
 
   useEffect(() => {
     return clearTimer;
   }, [clearTimer]);
 
-  return { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop };
+  return { remaining, totalSeconds, status, progress, start, pause, resume, reset, stop, updateTime };
 }
