@@ -152,12 +152,12 @@ export function SettingsModal({ settings, onUpdate }: SettingsModalProps) {
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {([
-                    { id: 'classic' as const, label: 'Classic', preview: <div className="w-10 h-10 rounded-full border-[3px] border-primary" /> },
+                   { id: 'classic' as const, label: 'Classic', preview: <div className="w-10 h-10 rounded-full border-[3px] border-primary" /> },
                     { id: 'rainbow' as const, label: 'Rainbow', preview: <ThemeRing gradient="conic-gradient(#f44, #f90, #ff0, #0c0, #09f, #c4f, #f44)" /> },
-                    { id: 'lovable' as const, label: 'Lovable', preview: <ThemeRing gradient="conic-gradient(#ff5757, #ff57b9, #b957ff, #5770ff, #ff5757)" /> },
+                    { id: 'lovable' as const, label: 'Lovable', preview: <ThemeRing gradient="conic-gradient(#ff5757, #ffa557, #b957ff, #ff5757)" /> },
                     { id: 'cherry' as const, label: 'Cherry', preview: <ThemeRing gradient="conic-gradient(#ffb7c5, #ff69b4, #ff1493, #ffb7c5)" /> },
                     { id: 'wisteria' as const, label: 'Wisteria', preview: <ThemeRing gradient="conic-gradient(#c9a0dc, #8b5cf6, #6d28d9, #a78bfa, #c9a0dc)" /> },
-                    { id: 'ocean' as const, label: 'Ocean', preview: <ThemeRing gradient="conic-gradient(#06b6d4, #0ea5e9, #3b82f6, #6366f1, #06b6d4)" /> },
+                    { id: 'ocean' as const, label: 'Ocean', preview: <ThemeRing gradient="conic-gradient(#06d4a0, #22c55e, #0ea5e9, #3b82f6, #06d4a0)" /> },
                   ]).map(theme => (
                     <button
                       key={theme.id}
