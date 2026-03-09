@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'timr-settings';
 
+export type TimerTheme = 'classic' | 'rainbow';
+
 export interface TimrSettings {
   audioEnabled: boolean;
   volume: number;
@@ -9,6 +11,7 @@ export interface TimrSettings {
   keepAwake: boolean;
   googleFontUrl: string;
   youtubeUrl: string;
+  timerTheme: TimerTheme;
 }
 
 const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap';
@@ -20,6 +23,7 @@ const defaultSettings: TimrSettings = {
   keepAwake: true,
   googleFontUrl: DEFAULT_FONT_URL,
   youtubeUrl: '',
+  timerTheme: 'classic',
 };
 
 export function useSettings() {
