@@ -67,5 +67,71 @@ export function useSettings() {
     }
   }, [settings.googleFontUrl]);
 
+  // Apply theme colors dynamically
+  useEffect(() => {
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+
+    // Theme color definitions: [light, dark] pairs as HSL values
+    const themeColors: Record<TimerTheme, {
+      primary: [string, string];
+      accent: [string, string];
+      ring: [string, string];
+      timerGlow: [string, string];
+      timerActive: [string, string];
+    } | null> = {
+      classic: null, // uses CSS defaults
+      rainbow: {
+        primary: ['0 85% 60%', '0 85% 62%'],
+        accent: ['280 80% 60%', '280 75% 65%'],
+        ring: ['0 85% 60%', '0 85% 62%'],
+        timerGlow: ['0 85% 60%', '0 85% 62%'],
+        timerActive: ['280 80% 60%', '280 75% 65%'],
+      },
+      lovable: {
+        primary: ['340 90% 60%', '340 90% 65%'],
+        accent: ['280 100% 67%', '280 100% 72%'],
+        ring: ['340 90% 60%', '340 90% 65%'],
+        timerGlow: ['340 90% 60%', '340 90% 65%'],
+        timerActive: ['320 95% 55%', '320 90% 62%'],
+      },
+      cherry: {
+        primary: ['330 100% 71%', '330 100% 74%'],
+        accent: ['338 100% 55%', '338 100% 60%'],
+        ring: ['330 100% 71%', '330 100% 74%'],
+        timerGlow: ['330 100% 71%', '330 100% 74%'],
+        timerActive: ['338 100% 55%', '338 95% 60%'],
+      },
+      wisteria: {
+        primary: ['263 90% 66%', '263 90% 70%'],
+        accent: ['271 81% 46%', '271 81% 55%'],
+        ring: ['263 90% 66%', '263 90% 70%'],
+        timerGlow: ['263 90% 66%', '263 90% 70%'],
+        timerActive: ['271 81% 46%', '271 81% 55%'],
+      },
+      ocean: {
+        primary: ['199 89% 48%', '199 89% 52%'],
+        accent: ['217 91% 60%', '217 91% 65%'],
+        ring: ['199 89% 48%', '199 89% 52%'],
+        timerGlow: ['199 89% 48%', '199 89% 52%'],
+        timerActive: ['217 91% 60%', '217 91% 65%'],
+      },
+    };
+
+    const colors = themeColors[settings.timerTheme];
+    const vars = ['--primary', '--accent', '--ring', '--timer-glow', '--timer-active'] as const;
+    const keys = ['primary', 'accent', 'ring', 'timerGlow', 'timerActive'] as const;
+
+    if (!colors) {
+      // Classic: remove overrides so CSS defaults apply
+      vars.forEach(v => root.style.removeProperty(v));
+    } else {
+      const idx = isDark ? 1 : 0;
+      keys.forEach((key, i) => {
+        root.style.setProperty(vars[i], colors[key][idx]);
+      });
+    }
+  }, [settings.timerTheme]);
+
   return { settings, setSettings };
 }
