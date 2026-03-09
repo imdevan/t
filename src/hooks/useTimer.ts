@@ -57,10 +57,16 @@ export function useTimer({ onComplete }: UseTimerOptions = {}) {
 
   const reset = useCallback(() => {
     clearTimer();
-    setRemaining(0);
-    setTotalSeconds(0);
-    setStatus('idle');
-  }, [clearTimer]);
+    if (totalSeconds > 0) {
+      setRemaining(totalSeconds);
+      setStatus('running');
+      intervalRef.current = setInterval(tick, 1000);
+    } else {
+      setRemaining(0);
+      setTotalSeconds(0);
+      setStatus('idle');
+    }
+  }, [clearTimer, totalSeconds, tick]);
 
   const progress = totalSeconds > 0 ? (totalSeconds - remaining) / totalSeconds : 0;
 
