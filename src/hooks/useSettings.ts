@@ -6,12 +6,16 @@ export interface TimrSettings {
   audioEnabled: boolean;
   defaultUnit: 'seconds' | 'minutes' | 'hours';
   keepAwake: boolean;
+  googleFontUrl: string;
 }
+
+const DEFAULT_FONT_URL = 'https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap';
 
 const defaultSettings: TimrSettings = {
   audioEnabled: true,
   defaultUnit: 'minutes',
   keepAwake: true,
+  googleFontUrl: DEFAULT_FONT_URL,
 };
 
 export function useSettings() {
@@ -30,6 +34,30 @@ export function useSettings() {
       return next;
     });
   }, []);
+
+  // Apply Google Font dynamically
+  useEffect(() => {
+    const url = settings.googleFontUrl;
+    if (!url) return;
+
+    const id = 'timr-google-font';
+    let link = document.getElementById(id) as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement('link');
+      link.id = id;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    link.href = url;
+
+    // Extract font family name from URL
+    const match = url.match(/family=([^:&]+)/);
+    if (match) {
+      const fontFamily = decodeURIComponent(match[1]).replace(/\+/g, ' ');
+      document.documentElement.style.setProperty('--font-display', `'${fontFamily}', cursive`);
+      document.documentElement.style.setProperty('--font-body', `'${fontFamily}', cursive`);
+    }
+  }, [settings.googleFontUrl]);
 
   return { settings, setSettings };
 }
