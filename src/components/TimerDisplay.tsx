@@ -15,6 +15,7 @@ interface TimerDisplayProps {
   status: TimerStatus;
   progress: number;
   youtubeUrl?: string;
+  timerTheme?: TimerTheme;
   onStart?: (seconds: number, label: string) => void;
   onUpdateTime?: (seconds: number) => void;
 }
