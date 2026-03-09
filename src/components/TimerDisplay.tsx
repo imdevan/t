@@ -60,7 +60,7 @@ export function TimerDisplay({ remaining, totalSeconds, status, progress, youtub
     }
   }, [editing]);
 
-  const canEdit = (status === 'idle' || status === 'completed') && !showVideo;
+  const canEdit = (status === 'idle' || status === 'completed' || status === 'paused') && !showVideo;
 
   const handleClick = () => {
     if (canEdit && onStart) {
