@@ -23,6 +23,7 @@ const defaultSettings: TimrSettings = {
   keepAwake: true,
   googleFontUrl: DEFAULT_FONT_URL,
   youtubeUrl: '',
+  timerTheme: 'classic',
 };
 
 export function useSettings() {
